@@ -1,0 +1,56 @@
+﻿@page
+@model PRN221.SalesManagement.Web.Pages.SaleOrderPage.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Sale Orders List</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.SaleOrder[0].OrderDate)</th>
+            <th>@Html.DisplayNameFor(model => model.SaleOrder[0].TotalAmount)</th>
+            <th>@Html.DisplayNameFor(model => model.SaleOrder[0].CustomerName)</th>
+            <th>@Html.DisplayNameFor(model => model.SaleOrder[0].Phone)</th>
+            <th>@Html.DisplayNameFor(model => model.SaleOrder[0].Status)</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.SaleOrder)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.OrderDate)</td>
+                <td>@Html.DisplayFor(modelItem => item.TotalAmount)</td>
+                <td>@Html.DisplayFor(modelItem => item.CustomerName)</td>
+                <td>@Html.DisplayFor(modelItem => item.Phone)</td>
+                <td>@Html.DisplayFor(modelItem => item.Status)</td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="pagination">
+    <a asp-page="./Index"
+       asp-route-pageIndex="@(Model.PageIndex - 1)"
+       class="btn btn-primary @(Model.HasPreviousPage ? "" : "disabled")">
+        Previous
+    </a>
+    <span>Page @Model.PageIndex of @Model.TotalPages</span>
+    <a asp-page="./Index"
+       asp-route-pageIndex="@(Model.PageIndex + 1)"
+       class="btn btn-primary @(Model.HasNextPage ? "" : "disabled")">
+        Next
+    </a>
+</div>
