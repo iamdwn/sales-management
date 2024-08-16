@@ -4,29 +4,73 @@
 @{
     ViewData["Title"] = "Home page";
 }
+<style>
+    /* Hover effect for product and category areas */
+    .product-category-section {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 0.75rem;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin-bottom: 20px;
+        text-decoration: none; /* Remove underline from links */
+        color: inherit; /* Inherit color to ensure text color */
+        display: block; /* Make the link take up full space */
+    }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome to Sales Management System</h1>
-    <p>Manage your products and categories efficiently.</p>
+        .product-category-section:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
 
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Products</h5>
-                    <p class="card-text">View, create, and manage products.</p>
-                    <a asp-page="ProductPage/Index" class="btn btn-primary">Go to Products</a>
-                </div>
+        /* Text color change on hover */
+        .product-category-section h2,
+        .product-category-section p {
+            color: #555;
+            transition: color 0.3s ease;
+        }
+
+        .product-category-section:hover h2,
+        .product-category-section:hover p {
+            color: #007bff;
+        }
+
+        /* Icon color change on hover */
+        .product-category-section i {
+            font-size: 3rem;
+            color: black;
+            transition: color 0.3s ease;
+        }
+
+        .product-category-section:hover i {
+            color: #0056b3;
+        }
+
+</style>
+
+<div class="text-center my-4">
+
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-6">
+                <a href="/ProductPage" class="product-category-section">
+                    <h2><i class="fas fa-box"></i> Products</h2>
+                    <p>Explore our wide range of products.</p>
+                </a>
+            </div>
+            <div class="col-md-6">
+                <a href="/CategoryPage" class="product-category-section">
+                    <h2><i class="fas fa-tags"></i> Categories</h2>
+                    <p>Browse products by category.</p>
+                </a>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Categories</h5>
-                    <p class="card-text">View, create, and manage categories.</p>
-                    <a asp-page="CategoryPage/Index" class="btn btn-primary">Go to Categories</a>
-                </div>
-            </div>
-        </div>
+    </div>
+    <div class="hero-section text-center">
+        <h1 class="hero-title">Welcome to Sales Management System</h1>
+        <p class="hero-subtitle">Streamline Your Business with Powerful Tools</p>
+@*         <a href="#" class="btn btn-warning btn-lg cta-button">Get Started</a> *@
     </div>
 </div>

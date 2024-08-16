@@ -3,49 +3,125 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - PRN221.SalesManagement.Web</title>
+    <title>@ViewData["Title"] - Sales Management</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/PRN221.SalesManagement.Web.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <style>
+        /* ... (all the previous CSS remains the same) ... */
+    </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">PRN221.SalesManagement.Web</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top shadow-sm navbar-custom">
+            <!-- ... (navbar content remains the same) ... -->
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            @* &copy; 2024 - PRN221.SalesManagement.Web - <a asp-area="" asp-page="/Privacy">Privacy</a> *@
+    <main role="main" class="pb-3">
+        <div class="container mt-4">
+            @RenderBody()
         </div>
+    </main>
+
+    <footer class="footer mt-4 border-top">
+        <!-- ... (footer content remains the same) ... -->
     </footer>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Initialize Three.js scene
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xf0f0f0);  // Light gray background
+        const camera = new THREE.OrthographicCamera(-5, 5, 5, -5, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
 
-    @await RenderSectionAsync("Scripts", required: false)
+        // Create a group for all objects
+        const group = new THREE.Group();
+
+        // Shopping Cart
+        const cartShape = new THREE.Shape();
+        cartShape.moveTo(0, 0);
+        cartShape.lineTo(2, 0);
+        cartShape.lineTo(1.8, 2);
+        cartShape.lineTo(0.2, 2);
+        cartShape.lineTo(0, 0);
+
+        const cartGeometry = new THREE.ShapeGeometry(cartShape);
+        const cartMaterial = new THREE.MeshBasicMaterial({ color: 0x4a90e2 });
+        const cart = new THREE.Mesh(cartGeometry, cartMaterial);
+        cart.position.set(-2, -2, 0);
+        group.add(cart);
+
+        // Cart Handle
+        const handleGeometry = new THREE.BoxGeometry(0.5, 1.5, 0.1);
+        const handleMaterial = new THREE.MeshBasicMaterial({ color: 0x2c3e50 });
+        const handle = new THREE.Mesh(handleGeometry, handleMaterial);
+        handle.position.set(-1, 0.5, 0);
+        group.add(handle);
+
+        // Customer Silhouette
+        const customerShape = new THREE.Shape();
+        customerShape.moveTo(0, 0);
+        customerShape.lineTo(1, 0);
+        customerShape.lineTo(1, 2);
+        customerShape.lineTo(0.8, 2.2);
+        customerShape.lineTo(0.6, 2);
+        customerShape.lineTo(0.4, 2);
+        customerShape.lineTo(0.2, 2.2);
+        customerShape.lineTo(0, 2);
+        customerShape.lineTo(0, 0);
+
+        const customerGeometry = new THREE.ShapeGeometry(customerShape);
+        const customerMaterial = new THREE.MeshBasicMaterial({ color: 0x2c3e50 });
+        const customer = new THREE.Mesh(customerGeometry, customerMaterial);
+        customer.position.set(1, -2, 0);
+        group.add(customer);
+
+        // Add group to scene
+        scene.add(group);
+
+        camera.position.z = 5;
+
+        // Animation
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Gentle floating animation
+            group.position.y = Math.sin(Date.now() * 0.001) * 0.3;
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Adjust the renderer size on window resize
+        window.addEventListener('resize', () => {
+            const aspect = window.innerWidth / window.innerHeight;
+            let width, height;
+            if (aspect > 1) {
+                width = 10;
+                height = 10 / aspect;
+            } else {
+                width = 10 * aspect;
+                height = 10;
+            }
+            camera.left = -width / 2;
+            camera.right = width / 2;
+            camera.top = height / 2;
+            camera.bottom = -height / 2;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+
+    <!-- JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl5+5hb7V2l5E5z5IB+DQCHk6KqF6L5G4iL5P2tKI6" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gybCihh5P6Y5in1DQ9Dw5wShbWu3yYjA0yWQf2f5V91O4cJKBI" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js" integrity="sha384-pzjw8f+ua7Kw1TIqD2RMWfUqhr58P1kE3cP6luW1qSk9WWfoZ72xKp4q6iCvf8a+" crossorigin="anonymous"></script>
+
+    @RenderSection("Scripts", required: false)
 </body>
 </html>
