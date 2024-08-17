@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
 </head>
+
 <body>
     <main role="main" class="pb-3">
         <div class="sidebar closed">
@@ -16,13 +17,25 @@
             <nav class="nav flex-column">
                 @if (User.Identity.IsAuthenticated)
                 {
-                    <a class="nav-link" href="#">Welcome, @User.Identity.Name</a>
-                    <a class="nav-link" href="/Account/Logout">Logout</a>
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-user"></i>
+                        <span>Welcome, @User.Identity.Name</span>
+                    </a>
+                    <a class="nav-link" href="/Account/Logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
                 }
                 else
                 {
-                    <button class="btn sidebar-button" onclick="location.href='/Account/Login'">Login</button>
-                    <button class="btn sidebar-button" onclick="location.href='/Account/Register'">Register</button>
+                    <button class="btn sidebar-button" onclick="location.href='/Account/Login'">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span>Login</span>
+                    </button>
+                    <button class="btn sidebar-button" onclick="location.href='/Account/Register'">
+                        <i class="fas fa-user-plus"></i>
+                        <span>Register</span>
+                    </button>
                 }
             </nav>
         </div>
@@ -141,7 +154,7 @@
 
         // Toggle sidebar on icon click
         document.querySelector('.toggle-icon').addEventListener('click', function () {
-            if (!sidebar.classList.contains('closed')) {
+            if (sidebar.classList.contains('closed')) {
                 sidebar.classList.remove('closed');
                 sidebar.style.left = '0';
                 rotateIcon(true);
@@ -154,17 +167,18 @@
 
         // Show sidebar on hover and hide on mouse leave
         sidebar.addEventListener('mouseenter', function () {
-            sidebar.style.left = '0';
-            rotateIcon(true);  // Rotate icon when sidebar is fully visible
+            if (sidebar.classList.contains('closed')) {
+                sidebar.style.left = '0';
+                rotateIcon(true);
+            }
         });
 
         sidebar.addEventListener('mouseleave', function () {
             if (sidebar.classList.contains('closed')) {
                 sidebar.style.left = '-198px';
-                rotateIcon(false);  // Rotate icon when sidebar is hidden
+                rotateIcon(false);
             }
         });
     });
 </script>
-
 </html>
