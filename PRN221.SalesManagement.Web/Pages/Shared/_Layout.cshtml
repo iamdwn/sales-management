@@ -8,33 +8,19 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-    <style>
-        /* ... (all the previous CSS remains the same) ... */
-    </style>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top shadow-sm navbar-custom">
-            <!-- ... (navbar content remains the same) ... -->
-        </nav>
-    </header>
-
     <main role="main" class="pb-3">
         <div class="container mt-4">
             @RenderBody()
         </div>
     </main>
-
-    <footer class="footer mt-4 border-top">
-        <!-- ... (footer content remains the same) ... -->
-    </footer>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
         // Initialize Three.js scene
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0xf0f0f0);  // Light gray background
-        const camera = new THREE.OrthographicCamera(-5, 5, 5, -5, 0.1, 1000);
+        const camera = new THREE.OrthographicCamera(-5, 5.5, 2, -5, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
@@ -117,7 +103,6 @@
         });
     </script>
 
-    <!-- JavaScript -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl5+5hb7V2l5E5z5IB+DQCHk6KqF6L5G4iL5P2tKI6" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gybCihh5P6Y5in1DQ9Dw5wShbWu3yYjA0yWQf2f5V91O4cJKBI" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js" integrity="sha384-pzjw8f+ua7Kw1TIqD2RMWfUqhr58P1kE3cP6luW1qSk9WWfoZ72xKp4q6iCvf8a+" crossorigin="anonymous"></script>

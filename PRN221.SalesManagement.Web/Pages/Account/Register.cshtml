@@ -1,0 +1,156 @@
+﻿@page
+@model PRN221.SalesManagement.Web.Pages.Account.RegisterModel
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Register";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+    .register-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        padding: 20px;
+        position: relative;
+    }
+
+    .register-card {
+        background: white;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border-radius: 1rem;
+        margin: 20px;
+        overflow: hidden;
+        width: 500px;
+        padding: 30px;
+        transform: translateY(0);
+        transition: transform 0.3s ease;
+    }
+
+        .register-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+        }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border: none;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        border-radius: 0.5rem;
+        padding: 10px 0;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #5563d7, #643c8a);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+    .register-card .card-header {
+        background-color: transparent;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border-bottom: none;
+        color: white;
+        padding: 20px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .form-control {
+        border-radius: 0.5rem;
+        padding: 12px;
+        font-size: 1rem;
+        border: 1px solid #ddd;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .form-control:focus {
+            border-color: #764ba2;
+            box-shadow: 0 0 5px rgba(118, 75, 162, 0.5);
+        }
+
+    .form-group label {
+        font-weight: 600;
+        color: #555;
+    }
+
+    .login-link {
+        color: #0056b3;
+        font-weight: 500; 
+        text-decoration: none; 
+        font-size: 1rem; 
+        transition: color 0.3s ease, text-shadow 0.3s ease;
+        position: relative;
+    }
+
+        .login-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -2px;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(135deg, #0056b3, #66b2ff); /* Gradient underline */
+            transform: scaleX(0);
+            transform-origin: bottom right;
+            transition: transform 0.3s ease;
+        }
+
+        .login-link:hover {
+            color: #003d7a; /* Darker blue on hover for contrast */
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+        }
+
+            .login-link:hover::before {
+                transform: scaleX(1);
+                transform-origin: bottom left;
+            }
+</style>
+
+<div class="register-container">
+    <div class="register-card card">
+        <div class="card-header">
+            Register
+        </div>
+        <div class="card-body">
+            <form method="post" action="/Account/Register">
+                <div class="form-group mb-3">
+                    <label for="Username">Username</label>
+                    <input type="text" class="form-control" id="Username" name="Username" required placeholder="Enter your username">
+                </div>
+                <div class="form-group mb-3">
+                    <label for="Email">Email</label>
+                    <input type="email" class="form-control" id="Email" name="Email" required placeholder="Enter your email">
+                </div>
+                <div class="form-group mb-3">
+                    <label for="Password">Password</label>
+                    <input type="password" class="form-control" id="Password" name="Password" required placeholder="Enter your password">
+                </div>
+                <div class="form-group mb-3">
+                    <label for="ConfirmPassword">Confirm Password</label>
+                    <input type="password" class="form-control" id="ConfirmPassword" name="ConfirmPassword" required placeholder="Confirm your password">
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-block">Register</button>
+                </div>
+                <div class="text-center mt-3">
+                    <p>
+                        Already have an account?
+                        <a href="/Account/Login" class="text-primary login-link">Login Now</a>
+                    </p>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

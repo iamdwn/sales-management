@@ -14,9 +14,9 @@
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         padding: 20px;
         margin-bottom: 20px;
-        text-decoration: none; /* Remove underline from links */
-        color: inherit; /* Inherit color to ensure text color */
-        display: block; /* Make the link take up full space */
+        text-decoration: none;
+        color: inherit;
+        display: block;
     }
 
         .product-category-section:hover {
@@ -47,11 +47,39 @@
             color: #0056b3;
         }
 
+    /* Hero section styles */
+    .hero-section {
+        margin-top: 50px;
+    }
+
+    .hero-title {
+        font-size: 2.5rem;
+        color: #343a40;
+    }
+
+    .hero-subtitle {
+        font-size: 1.25rem;
+        color: #6c757d;
+        margin-bottom: 30px;
+    }
+
+    .cta-button {
+        background-color: #ffc107;
+        color: #212529;
+        border-color: #ffc107;
+        transition: transform 0.3s ease, background-color 0.3s ease;
+    }
+
+        .cta-button:hover {
+            background-color: #e0a800;
+            border-color: #d39e00;
+            color: #fff;
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
 </style>
 
 <div class="text-center my-4">
-
-
     <div class="container mt-4">
         <div class="row">
             <div class="col-md-6">
@@ -71,6 +99,6 @@
     <div class="hero-section text-center">
         <h1 class="hero-title">Welcome to Sales Management System</h1>
         <p class="hero-subtitle">Streamline Your Business with Powerful Tools</p>
-@*         <a href="#" class="btn btn-warning btn-lg cta-button">Get Started</a> *@
+        <a href="Account/Login" class="btn btn-warning btn-lg cta-button">Get Started</a>
     </div>
 </div>
