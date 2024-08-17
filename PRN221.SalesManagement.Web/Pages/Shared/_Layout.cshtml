@@ -11,6 +11,21 @@
 </head>
 <body>
     <main role="main" class="pb-3">
+        <div class="sidebar closed">
+            <span class="toggle-icon"><i class="fas fa-chevron-right"></i></span>
+            <nav class="nav flex-column">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <a class="nav-link" href="#">Welcome, @User.Identity.Name</a>
+                    <a class="nav-link" href="/Account/Logout">Logout</a>
+                }
+                else
+                {
+                    <button class="btn sidebar-button" onclick="location.href='/Account/Login'">Login</button>
+                    <button class="btn sidebar-button" onclick="location.href='/Account/Register'">Register</button>
+                }
+            </nav>
+        </div>
         <div class="container mt-4">
             @RenderBody()
         </div>
@@ -109,4 +124,47 @@
 
     @RenderSection("Scripts", required: false)
 </body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const sidebar = document.querySelector('.sidebar');
+        const toggleIcon = document.querySelector('.toggle-icon i');
+
+        // Function to rotate the icon
+        function rotateIcon(open) {
+            if (open) {
+                toggleIcon.style.transform = 'rotate(0deg)';
+            } else {
+                toggleIcon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        // Toggle sidebar on icon click
+        document.querySelector('.toggle-icon').addEventListener('click', function () {
+            if (!sidebar.classList.contains('closed')) {
+                sidebar.classList.remove('closed');
+                sidebar.style.left = '0';
+                rotateIcon(true);
+            } else {
+                sidebar.classList.add('closed');
+                sidebar.style.left = '-198px';
+                rotateIcon(false);
+            }
+        });
+
+        // Show sidebar on hover and hide on mouse leave
+        sidebar.addEventListener('mouseenter', function () {
+            sidebar.style.left = '0';
+            rotateIcon(true);  // Rotate icon when sidebar is fully visible
+        });
+
+        sidebar.addEventListener('mouseleave', function () {
+            if (sidebar.classList.contains('closed')) {
+                sidebar.style.left = '-198px';
+                rotateIcon(false);  // Rotate icon when sidebar is hidden
+            }
+        });
+    });
+</script>
+
 </html>

@@ -20,3 +20,94 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #ffffff; /* White background for contrast */
+}
+
+.sidebar {
+    position: fixed;
+    left: -198px; /* Start off-screen */
+    top: 0;
+    bottom: 0;
+    width: 220px;
+    transition: left 0.4s ease;
+    background-color: #000000; /* Pure black background */
+    color: #ffffff; /* White text for contrast */
+    padding-top: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+    border-radius: 0 8px 8px 0; /* Slight rounding on the sidebar */
+    z-index: 1000;
+}
+
+    .sidebar:hover {
+        left: 0; /* Slide in on hover */
+    }
+
+    .sidebar .toggle-icon {
+        position: absolute;
+        top: 20px;
+        right: -30px; /* Position it outside the sidebar */
+        background-color: #007bff; /* Bright blue for the toggle button */
+        color: white;
+        border-radius: 50%;
+        padding: 10px;
+        cursor: pointer;
+        transition: transform 0.3s ease, background-color 0.3s ease;
+        font-size: 16px;
+        z-index: 1100;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+        .sidebar .toggle-icon:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+
+    .sidebar.closed .toggle-icon {
+        transform: rotate(180deg); /* Rotate the arrow when closed */
+    }
+
+.nav-link {
+    margin: 15px 0;
+    padding: 10px 20px;
+    color: #ffffff; /* White text */
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+    .nav-link:hover {
+        background-color: #1f1f1f; /* Slightly lighter black on hover */
+        border-radius: 4px;
+    }
+
+button.sidebar-button {
+    width: 80%;
+    margin: 15px auto;
+    display: block;
+    background-color: #007bff; /* Blue button */
+    border: none;
+    color: white;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+    text-align: center;
+    font-weight: 500;
+}
+
+    button.sidebar-button:hover {
+        background-color: #0056b3; /* Darker blue on hover */
+    }
+
+    button.sidebar-button + button.sidebar-button {
+        background-color: #1f1f1f; /* Dark black for the secondary button */
+    }
+
+        button.sidebar-button + button.sidebar-button:hover {
+            background-color: #000000; /* Pure black on hover */
+        }
+
+
