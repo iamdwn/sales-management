@@ -46,8 +46,21 @@ namespace PRN221.SalesManagement.Web.Pages.Account
             var customerEmail = _configuration["CustomerAccount:Email"];
             var customerPassword = _configuration["CustomerAccount:Password"];
 
+            var existUser = HttpContext.Session.GetObjectFromJson<CustomerDto>($"{Input.Email}");
+
             if (ModelState.IsValid)
             {
+                if (existUser != null)
+                {
+                    user = new UserDto
+                    {
+                        isAuthenticated = true,
+                        Username = existUser.Username,
+                        Email = existUser.Email,
+                        isAdmin = false
+                    };
+                }
+
                 if (Input.Email.Equals(adminEmail) && Input.Password.Equals(adminPassword))
                 {
                     user = new UserDto
@@ -70,11 +83,15 @@ namespace PRN221.SalesManagement.Web.Pages.Account
                     };
                 }
 
-                if (user == null) return Page();
+                if (user == null)
+                {
+                    TempData["toast-error"] = "Invalid username or password!";
+                    return Page();
+                }
 
                 TempData["toast-success"] = "Login success!";
 
-                HttpContext.Session.SetObjectAsJson("User", user);;
+                HttpContext.Session.SetObjectAsJson("User", user); ;
                 return RedirectToPage("/Index");
             }
             else

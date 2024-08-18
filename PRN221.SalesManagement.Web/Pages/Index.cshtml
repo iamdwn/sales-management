@@ -80,7 +80,7 @@
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
 </style>
-
+<partial name="_Toast" />
 <div class="text-center my-4">
 
     <div class="container mt-4">
@@ -114,7 +114,8 @@
                         </a>
                     </div>
                 }
-            } else
+            }
+            else
             {
                 <div class="col-md-12">
                     <a href="/ProductPage" class="product-category-section">
@@ -128,6 +129,12 @@
     <div class="hero-section text-center">
         <h1 class="hero-title">Welcome to Sales Management System</h1>
         <p class="hero-subtitle">Streamline Your Business with Powerful Tools</p>
-        <a href="Account/Login" class="btn btn-warning btn-lg cta-button">Get Started</a>
+        @if (user != null && user.isAuthenticated)
+        {
+            <a href="ProductPage/Index" class="btn btn-warning btn-lg cta-button">Get Started</a>
+        } else
+        {
+            <a href="Account/Login" class="btn btn-warning btn-lg cta-button">Get Started</a>
+        }
     </div>
-</div>
+    </div>
