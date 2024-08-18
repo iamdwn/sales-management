@@ -55,7 +55,7 @@ namespace PRN221.SalesManagement.Web.Pages.Account
                     user = new UserDto
                     {
                         isAuthenticated = true,
-                        Username = existUser.Username,
+                        FullName = existUser.FullName,
                         Email = existUser.Email,
                         isAdmin = false
                     };
@@ -66,7 +66,7 @@ namespace PRN221.SalesManagement.Web.Pages.Account
                     user = new UserDto
                     {
                         isAuthenticated = true,
-                        Username = "Admin",
+                        FullName = "Admin",
                         Email = adminEmail,
                         isAdmin = true
                     };
@@ -77,7 +77,7 @@ namespace PRN221.SalesManagement.Web.Pages.Account
                     user = new UserDto
                     {
                         isAuthenticated = true,
-                        Username = "Customer",
+                        FullName = "Customer",
                         Email = customerEmail,
                         isAdmin = false,
                     };

@@ -22,12 +22,6 @@ namespace PRN221.SalesManagement.Web.Pages.Account
 
                 if (existUser != null)
                 {
-                    if (existUser.Username.Equals(Input.Username))
-                    {
-                        TempData["toast-error"] = "Username is exist!";
-
-                    }
-
                     if (existUser.Email.Equals(Input.Email))
                     {
                         TempData["toast-error"] = "Email is exist!";
@@ -42,8 +36,9 @@ namespace PRN221.SalesManagement.Web.Pages.Account
                 }
                 var user = new CustomerDto
                 {
-                    Username = Input.Username,
+                    FullName = Input.FullName,
                     Email = Input.Email,
+                    Phone = Input.Phone,
                     Password = Input.Password,
                     ConfirmPassword = Input.ConfirmPassword
                 };
