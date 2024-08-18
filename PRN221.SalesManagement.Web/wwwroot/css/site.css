@@ -60,33 +60,33 @@ body {
     box-shadow: 3px 0 15px rgba(0, 0, 0, 0.2); /* Soft shadow for depth */
 }
 
-    .sidebar:hover {
-        left: 0; /* Slide in on hover */
-        box-shadow: 5px 0 15px rgba(0, 0, 0, 0.3); /* Stronger shadow when visible */
-    }
+.sidebar:hover {
+    left: 0; /* Slide in on hover */
+    box-shadow: 5px 0 15px rgba(0, 0, 0, 0.3); /* Stronger shadow when visible */
+}
 
-    .sidebar .toggle-icon {
-        position: absolute;
-        top: 15px;
-        right: -30px;
-        background-color: #2980b9; /* Vibrant blue */
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: transform 0.4s ease, background-color 0.4s ease;
-    }
+.sidebar .toggle-icon {
+    position: absolute;
+    top: 15px;
+    right: -30px;
+    background-color: #2980b9; /* Vibrant blue */
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.4s ease, background-color 0.4s ease;
+}
 
-        .sidebar .toggle-icon:hover {
-            background-color: #3498db; /* Slightly lighter blue on hover */
-        }
+.sidebar .toggle-icon:hover {
+    background-color: #3498db; /* Slightly lighter blue on hover */
+}
 
-    .sidebar.closed .toggle-icon {
-        transform: rotate(180deg); /* Rotate the arrow when closed */
-    }
+.sidebar.closed .toggle-icon {
+    transform: rotate(180deg); /* Rotate the arrow when closed */
+}
 
 /* Nav link styling */
 .nav-link {
@@ -101,21 +101,21 @@ body {
     transition: background-color 0.4s ease, color 0.4s ease, padding-left 0.3s ease;
 }
 
-    .nav-link i {
-        margin-right: 10px; /* Space between icon and text */
-        font-size: 18px;
-        transition: color 0.4s ease;
-    }
+.nav-link i {
+    margin-right: 10px; /* Space between icon and text */
+    font-size: 18px;
+    transition: color 0.4s ease;
+}
 
-    .nav-link:hover {
-        background-color: #34495e; /* Darker gray-blue on hover */
-        border-radius: 4px;
-        padding-left: 25px; /* Slight slide effect on hover */
-    }
+.nav-link:hover {
+    background-color: #34495e; /* Darker gray-blue on hover */
+    border-radius: 4px;
+    padding-left: 25px; /* Slight slide effect on hover */
+}
 
-        .nav-link:hover i {
-            color: #3498db; /* Icon color change on hover */
-        }
+.nav-link:hover i {
+    color: #3498db; /* Icon color change on hover */
+}
 
 /* Buttons in Sidebar */
 button.sidebar-button {
@@ -134,19 +134,19 @@ button.sidebar-button {
     transition: background-color 0.4s ease, transform 0.3s ease;
 }
 
-    button.sidebar-button:hover {
-        background-color: #c0392b; /* Darker red on hover */
-        transform: translateY(-3px); /* Lift effect */
-    }
+button.sidebar-button:hover {
+    background-color: #c0392b; /* Darker red on hover */
+    transform: translateY(-3px); /* Lift effect */
+}
 
-    /* Secondary button */
-    button.sidebar-button.secondary {
-        background-color: #8e44ad; /* Deep purple for secondary */
-    }
+/* Secondary button */
+button.sidebar-button.secondary {
+    background-color: #8e44ad; /* Deep purple for secondary */
+}
 
-        button.sidebar-button.secondary:hover {
-            background-color: #7d3c98; /* Darker purple on hover */
-        }
+button.sidebar-button.secondary:hover {
+    background-color: #7d3c98; /* Darker purple on hover */
+}
 
 /* Responsive behavior */
 @media (max-width: 768px) {
@@ -155,10 +155,10 @@ button.sidebar-button {
         left: -180px;
     }
 
-        .sidebar:hover {
-            left: 0;
-            width: 180px;
-        }
+    .sidebar:hover {
+        left: 0;
+        width: 180px;
+    }
 
     .nav-link {
         font-size: 14px;

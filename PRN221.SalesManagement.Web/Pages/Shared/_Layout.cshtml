@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using PRN221.SalesManagement.Repo.Dtos
+@using PRN221.SalesManagement.Repo.SessionExtensions
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -12,14 +14,17 @@
 
 <body>
     <main role="main" class="pb-3">
+        @{
+            var user = Context.Session.GetObjectFromJson<UserDto>("User");
+        }
         <div class="sidebar closed">
             <span class="toggle-icon"><i class="fas fa-chevron-right"></i></span>
             <nav class="nav flex-column">
-                @if (User.Identity.IsAuthenticated)
+                @if (user != null && user.isAuthenticated)
                 {
                     <a class="nav-link" href="#">
                         <i class="fas fa-user"></i>
-                        <span>Welcome, @User.Identity.Name</span>
+                        <span>Welcome, @user.Username</span>
                     </a>
                     <a class="nav-link" href="/Account/Logout">
                         <i class="fas fa-sign-out-alt"></i>
