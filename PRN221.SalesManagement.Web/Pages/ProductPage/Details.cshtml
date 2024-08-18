@@ -7,10 +7,10 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1>Product Details</h1>
 
-<div>
-    <h4>Product</h4>
+<div class="product-details">
+    <h4>@Model.Product.Name</h4>
     <hr />
     @{
         var user = HttpContext.Session.GetObjectFromJson<UserDto>("User");
@@ -35,6 +35,7 @@
             @Html.DisplayFor(model => model.Product.Price)
         </dd>
         @if (user != null && user.isAuthenticated)
+        {
             @if (user.isAdmin)
             {
                 <dt class="col-sm-2">
@@ -44,36 +45,83 @@
                     @Html.DisplayFor(model => model.Product.Status)
                 </dd>
             }
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Product.Category)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Product.Category.Name)
-        </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Product.Category)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Product.Category.Name)
+            </dd>
+        }
     </dl>
 </div>
+
 @if (user != null && user.isAuthenticated)
+{
     @if (user.isAdmin)
     {
-        <div>
-            <a class="btn btn-primary" asp-page="./Edit" asp-route-id="@Model.Product.Id">Edit</a> |
+        <div class="action-buttons">
+            <a class="btn btn-primary" asp-page="./Edit" asp-route-id="@Model.Product.Id">Edit</a>
         </div>
     }
-<div>
-    <a class="btn btn-primary" asp-page="./Index">Back to List</a>
+}
+
+<div class="action-buttons">
+    <a class="btn btn-secondary" asp-page="./Index">Back to List</a>
 </div>
+
 <style>
-    .btn-primary:hover {
-        background-color: #0056b3; /* Darker blue shade */
-        border-color: #004085;
-        transform: scale(1.05);
+    body {
+        background-color: #f8f9fa; /* Light gray background for contrast */
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1.5rem;
+        color: #343a40; /* Dark gray */
+    }
+
+    .product-details h4 {
+        font-size: 1.75rem;
+        color: #007bff; /* Bootstrap primary color */
+    }
+
+    .product-details dl {
+        margin-top: 1.5rem;
+    }
+
+    .product-details dt {
+        font-weight: bold;
+        color: #495057; /* Darker gray */
+    }
+
+    .product-details dd {
+        margin-bottom: 1rem;
+        color: #212529; /* Almost black */
+    }
+
+    .action-buttons {
+        margin-top: 2rem;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        padding: 0.5rem 1.25rem;
+        font-size: 1rem;
+        border-radius: 0.375rem;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
         transition: all 0.3s ease-in-out;
     }
 
-    .btn-secondary:hover {
-        background-color: #6c757d; /* Darker gray shade */
-        border-color: #545b62;
-        transform: scale(1.05);
-        transition: all 0.3s ease-in-out;
-    }
+        .btn-primary:hover {
+            background-color: #0056b3; /* Darker blue shade */
+            border-color: #004085;
+            transform: scale(1.05);
+        }
+
+        .btn-secondary:hover {
+            background-color: #6c757d; /* Darker gray shade */
+            border-color: #545b62;
+            transform: scale(1.05);
+        }
 </style>

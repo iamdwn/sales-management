@@ -91,7 +91,7 @@ namespace PRN221.SalesManagement.Web.Pages.Account
 
                 TempData["toast-success"] = "Login success!";
 
-                HttpContext.Session.SetObjectAsJson("User", user); ;
+                HttpContext.Session.SetObjectAsJson("User", user);
                 return RedirectToPage("/Index");
             }
             else

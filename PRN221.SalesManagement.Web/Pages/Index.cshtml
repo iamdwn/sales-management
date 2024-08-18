@@ -80,13 +80,15 @@
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
 </style>
+@{
+    var user = HttpContext.Session.GetObjectFromJson<UserDto>("User");
+}
+
 <partial name="_Toast" />
 <div class="text-center my-4">
 
     <div class="container mt-4">
-        @{
-            var user = HttpContext.Session.GetObjectFromJson<UserDto>("User");
-        }
+
         <div class="row">
             @if (user != null && user.isAuthenticated)
             {
