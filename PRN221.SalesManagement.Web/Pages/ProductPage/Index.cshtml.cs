@@ -35,6 +35,7 @@ namespace PRN221.SalesManagement.Web.Pages.ProductPage
             }
 
             Product = _unitOfWork.ProductRepository.Get(
+                filter: p => p.Category.Status == true,
                 includeProperties: "Category",
                 pageIndex: PageIndex,
                 pageSize: PageSize

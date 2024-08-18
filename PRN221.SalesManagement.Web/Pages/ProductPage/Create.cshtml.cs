@@ -21,9 +21,14 @@ namespace PRN221.SalesManagement.Web.Pages.ProductPage
 
         public IActionResult OnGet()
         {
-        ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
+            var activeCategories = _context.Categories
+                                           .Where(c => c.Status == true)
+                                           .ToList();
+
+            ViewData["CategoryId"] = new SelectList(activeCategories, "Id", "Name");
             return Page();
         }
+
 
         [BindProperty]
         public Product Product { get; set; } = default!;
