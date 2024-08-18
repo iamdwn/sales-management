@@ -44,16 +44,26 @@
                 }
 
                 <!-- Additional icons at the bottom -->
-                <div class="sidebar-bottom">
-                    <a class="nav-link" href="/Cart">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span>Cart</span>
-                    </a>
-                    <a class="nav-link" href="/SaleOrders">
-                        <i class="fas fa-receipt"></i>
-                        <span>Sale Orders</span>
-                    </a>
-                </div>
+                @if (user != null && user.isAuthenticated)
+                {
+                    <div class="sidebar-bottom">
+                        @if (!user.isAdmin)
+                        {
+                            <a class="nav-link" href="/Cart/Index">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span>Cart</span>
+                            </a>
+                        }
+                        @if (user.isAdmin)
+                        {
+                            <a class="nav-link" href="/SaleOrderPage/Index">
+                                <i class="fas fa-receipt"></i>
+                                <span>Sale Orders</span>
+                            </a>
+                        }
+                    </div>
+
+                }
             </nav>
         </div>
         <div class="container mt-4">

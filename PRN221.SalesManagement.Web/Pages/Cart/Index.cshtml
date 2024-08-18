@@ -1,4 +1,233 @@
 ﻿@page
 @model PRN221.SalesManagement.Web.Pages.Cart.IndexModel
 @{
+    ViewData["Title"] = "Shopping Cart";
+
+    // Temporary DTO to hold cart item details
+    var cartItems = new List<dynamic>
+    {
+        new { Name = "Product 1", Price = 20.00, Quantity = 2 },
+        new { Name = "Product 2", Price = 10.00, Quantity = 1 }
+    };
+
+    // double subtotal = cartItems.Sum(item => item.Price * item.Quantity);
+    // double tax = subtotal * 0.1; // Example tax calculation
+    // double shipping = 5.99; // Fixed shipping cost
+    // double total = subtotal + tax + shipping;
+
+    double subtotal = 0;
+    double tax = 0;
+    double shipping = 0;
+    double total = 0;
 }
+
+<div class="container">
+    <h2>Your Shopping Cart</h2>
+
+    <div class="row">
+        <!-- Cart Items Section -->
+        <div class="col-md-8 cart-items">
+            @foreach (var item in cartItems)
+            {
+                <div class="cart-item">
+                    <div class="cart-item-details">
+                        <div class="item-header">
+                            <h5 class="item-name">@item.Name</h5>
+                            <button class="btn btn-danger btn-sm remove-btn">
+                                <i class="fas fa-trash-alt"></i> Remove
+                            </button>
+                        </div>
+                        <p class="item-price">Price: $@item.Price</p>
+                        <div class="quantity-control">
+                            <button class="btn btn-sm btn-outline-secondary quantity-btn">-</button>
+                            <input type="number" min="0" max="99" value="@item.Quantity" class="cart-item-quantity" />
+                            <button class="btn btn-sm btn-outline-secondary quantity-btn">+</button>
+                        </div>
+                        <p class="item-total">Total: $@(item.Price * item.Quantity)</p>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Cart Summary Section -->
+        <div class="col-md-4 cart-summary">
+            <h4>Order Summary</h4>
+            <div class="summary-item">
+                <span>Subtotal:</span>
+                <span>$@subtotal</span>
+            </div>
+            <div class="summary-item">
+                <span>Tax:</span>
+                <span>$@tax</span>
+            </div>
+            <div class="summary-item">
+                <span>Shipping:</span>
+                <span>$@shipping</span>
+            </div>
+            <div class="summary-item total">
+                <span>Total:</span>
+                <span>$@total</span>
+            </div>
+            <button class="btn btn-primary btn-lg btn-block checkout-btn">Proceed to Checkout</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Global Styles */
+    .container {
+        margin-top: 30px;
+        font-family: 'Roboto', sans-serif;
+        color: #333;
+    }
+
+    h2 {
+        font-weight: 700;
+        color: #444;
+        border-bottom: 2px solid #ddd;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+
+    /* Cart Item Styles */
+    .cart-item {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 30px;
+        padding: 15px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .cart-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+    .cart-item-details {
+        flex-grow: 1;
+        position: relative;
+        padding-left: 20px;
+    }
+
+    .item-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .item-name {
+        font-size: 1.4rem;
+        font-weight: bold;
+        color: #007bff;
+        transition: color 0.3s ease;
+    }
+
+        .item-name:hover {
+            color: #0056b3;
+        }
+
+    .item-price, .item-total {
+        font-size: 1.2rem;
+        color: #666;
+        margin-bottom: 10px;
+    }
+
+    .item-total {
+        font-weight: bold;
+        color: #333;
+    }
+
+    .quantity-control {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .cart-item-quantity {
+        width: 70px;
+        text-align: center;
+        margin: 0 10px;
+        border: 2px solid #ced4da;
+        border-radius: 10px;
+        font-size: 1.1rem;
+        padding: 5px;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        appearance: auto;
+        box-sizing: border-box;
+    }
+
+        .cart-item-quantity:focus {
+            border-color: #007bff;
+            box-shadow: 0px 0px 8px rgba(0, 123, 255, 0.5);
+        }
+
+    .quantity-btn {
+        font-size: 1.2rem;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+        .quantity-btn:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+    .remove-btn {
+        font-size: 1rem;
+        transition: transform 0.3s ease, background-color 0.3s ease;
+    }
+
+        .remove-btn:hover {
+            background-color: #dc3545;
+            color: white;
+            transform: scale(1.1);
+        }
+
+    /* Cart Summary Styles */
+    .cart-summary {
+        background-color: #fff;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .cart-summary:hover {
+            transform: translateY(-5px);
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        font-size: 1.2rem;
+        border-bottom: 1px solid #ddd;
+    }
+
+        .summary-item.total {
+            font-weight: bold;
+            font-size: 1.4rem;
+            color: #007bff;
+            border-bottom: none;
+        }
+
+    .checkout-btn {
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 10px;
+        font-size: 1.2rem;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .checkout-btn:hover {
+            background-color: #0056b3;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+        }
+</style>
+
+
+
