@@ -12,4 +12,9 @@ namespace PRN221.SalesManagement.Repo.Dtos
         public double Price { get; set; }
         public double Quantity { get; set; }
     }
+
+    public class Cart
+    {
+        public List<CartItems> Items { get; set; } = new List<CartItems>();
+    }
 }

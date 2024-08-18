@@ -2,23 +2,6 @@
 @model PRN221.SalesManagement.Web.Pages.Cart.IndexModel
 @{
     ViewData["Title"] = "Shopping Cart";
-
-    // Temporary DTO to hold cart item details
-    var cartItems = new List<dynamic>
-    {
-        new { Name = "Product 1", Price = 20.00, Quantity = 2 },
-        new { Name = "Product 2", Price = 10.00, Quantity = 1 }
-    };
-
-    // double subtotal = cartItems.Sum(item => item.Price * item.Quantity);
-    // double tax = subtotal * 0.1; // Example tax calculation
-    // double shipping = 5.99; // Fixed shipping cost
-    // double total = subtotal + tax + shipping;
-
-    double subtotal = 0;
-    double tax = 0;
-    double shipping = 0;
-    double total = 0;
 }
 
 <div class="container">
@@ -27,26 +10,51 @@
     <div class="row">
         <!-- Cart Items Section -->
         <div class="col-md-8 cart-items">
-            @foreach (var item in cartItems)
+            @for (var i = 0; i < Model.CartItems.Count; i++)
             {
+                var item = Model.CartItems[i];
                 <div class="cart-item">
                     <div class="cart-item-details">
                         <div class="item-header">
                             <h5 class="item-name">@item.Name</h5>
-                            <button class="btn btn-danger btn-sm remove-btn">
-                                <i class="fas fa-trash-alt"></i> Remove
-                            </button>
+                            <form method="post" asp-page-handler="RemoveItem" class="remove-form">
+                                <input type="hidden" name="index" value="@i" />
+                                <button type="submit" class="btn btn-danger btn-sm remove-btn">
+                                    <i class="fas fa-trash-alt"></i> Remove
+                                </button>
+                            </form>
                         </div>
                         <p class="item-price">Price: $@item.Price</p>
-                        <div class="quantity-control">
-                            <button class="btn btn-sm btn-outline-secondary quantity-btn">-</button>
-                            <input type="number" min="0" max="99" value="@item.Quantity" class="cart-item-quantity" />
-                            <button class="btn btn-sm btn-outline-secondary quantity-btn">+</button>
-                        </div>
+                        <form method="post" asp-page-handler="UpdateQuantity">
+                            <input type="hidden" name="index" value="@i" />
+                            <div class="quantity-control">
+                                <button type="submit" name="quantity" value="@((item.Quantity > 1) ? item.Quantity - 1 : item.Quantity)" class="btn btn-sm btn-outline-secondary quantity-btn">-</button>
+                                <input type="number" name="quantity" value="@item.Quantity" min="1" step="0.01" class="cart-item-quantity" />
+                                <button type="submit" name="quantity" value="@((item.Quantity < 99) ? item.Quantity + 1 : item.Quantity)" class="btn btn-sm btn-outline-secondary quantity-btn">+</button>
+                            </div>
+                        </form>
                         <p class="item-total">Total: $@(item.Price * item.Quantity)</p>
                     </div>
                 </div>
             }
+
+            <form method="post" asp-page-handler="AddItem" class="add-item-form">
+                <h4>Add New Item</h4>
+                <div class="form-group">
+                    <label for="productName">Product Name</label>
+                    <input type="text" id="productName" name="NewItem.Name" class="form-control" placeholder="Product Name" value="@Model.NewItem.Name" required />
+                </div>
+                <div class="form-group">
+                    <label for="productPrice">Price</label>
+                    <input type="number" id="productPrice" name="NewItem.Price" class="form-control" placeholder="Price" value="@Model.NewItem.Price" step="0.01" min="0" required />
+                </div>
+                <div class="form-group">
+                    <label for="productQuantity">Quantity</label>
+                    <input type="number" id="productQuantity" name="NewItem.Quantity" class="form-control" placeholder="Quantity" value="@Model.NewItem.Quantity" min="1" step="0.01" required />
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg">Add Item</button>
+            </form>
+
         </div>
 
         <!-- Cart Summary Section -->
@@ -54,19 +62,19 @@
             <h4>Order Summary</h4>
             <div class="summary-item">
                 <span>Subtotal:</span>
-                <span>$@subtotal</span>
+                <span>$@Model.Subtotal.ToString("F2")</span>
             </div>
             <div class="summary-item">
                 <span>Tax:</span>
-                <span>$@tax</span>
+                <span>$@Model.Tax.ToString("F2")</span>
             </div>
             <div class="summary-item">
                 <span>Shipping:</span>
-                <span>$@shipping</span>
+                <span>$@Model.Shipping.ToString("F2")</span>
             </div>
             <div class="summary-item total">
                 <span>Total:</span>
-                <span>$@total</span>
+                <span>$@Model.Total.ToString("F2")</span>
             </div>
             <button class="btn btn-primary btn-lg btn-block checkout-btn">Proceed to Checkout</button>
         </div>
@@ -227,7 +235,107 @@
             background-color: #0056b3;
             box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
         }
+
+    .add-item-form {
+        margin-top: 20px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .add-item-form h4 {
+        margin-bottom: 15px;
+        font-size: 1.5rem;
+        color: #333;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+        .form-group label {
+            font-weight: bold;
+            color: #555;
+        }
+
+    .form-control {
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+        font-size: 1rem;
+        padding: 10px;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+        font-size: 1.1rem;
+        padding: 10px 20px;
+        border-radius: 5px;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004a9a;
+        }
 </style>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Add item
+        $('#addItemForm').on('submit', function (event) {
+            event.preventDefault(); // Prevent default form submission
+            $.ajax({
+                type: 'POST',
+                url: $(this).attr('action'),
+                data: $(this).serialize(),
+                success: function (response) {
+                    // Update the cart UI with the response
+                    $('#cartContainer').html(response);
+                },
+                error: function () {
+                    alert('Error adding item.');
+                }
+            });
+        });
+
+        // Remove item
+        $('.remove-btn').on('click', function () {
+            var itemId = $(this).data('item-id'); // Get item ID from data attribute
+            $.ajax({
+                type: 'POST',
+                url: '/Cart/RemoveItem', // URL to handle removal
+                data: { id: itemId },
+                success: function (response) {
+                    $('#cartContainer').html(response);
+                },
+                error: function () {
+                    alert('Error removing item.');
+                }
+            });
+        });
+
+        // Update item quantity
+        $('.update-quantity').on('change', function () {
+            var itemId = $(this).data('item-id');
+            var newQuantity = $(this).val();
+            $.ajax({
+                type: 'POST',
+                url: '/Cart/UpdateQuantity', // URL to handle update
+                data: { id: itemId, quantity: newQuantity },
+                success: function (response) {
+                    $('#cartContainer').html(response);
+                },
+                error: function () {
+                    alert('Error updating quantity.');
+                }
+            });
+        });
+    });
+</script>
 
 
