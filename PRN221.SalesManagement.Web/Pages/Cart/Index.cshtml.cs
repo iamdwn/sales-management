@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace PRN221.SalesManagement.Web.Pages.AdminPage
+namespace PRN221.SalesManagement.Web.Pages.Cart
 {
     public class IndexModel : PageModel
     {

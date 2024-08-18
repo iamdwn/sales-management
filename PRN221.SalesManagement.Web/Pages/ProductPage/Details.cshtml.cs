@@ -28,7 +28,7 @@ namespace PRN221.SalesManagement.Web.Pages.ProductPage
                 return NotFound();
             }
 
-            var product = await _context.Products.FirstOrDefaultAsync(m => m.Id == id);
+            var product = await _context.Products.Include(c => c.Category).FirstOrDefaultAsync(m => m.Id == id);
             if (product == null)
             {
                 return NotFound();

@@ -1,16 +1,32 @@
 ﻿@page
+@using PRN221.SalesManagement.Repo.Dtos
+@using PRN221.SalesManagement.Repo.SessionExtensions
 @model PRN221.SalesManagement.Web.Pages.ProductPage.IndexModel
 
 @{
     ViewData["Title"] = "Products List";
 }
+<style>
+    .btn:hover {
+        background-color: #6c757d; /* Darker gray shade */
+        border-color: #545b62;
+        transform: scale(1.05);
+        transition: all 0.3s ease-in-out;
+    }
+</style>
 
 <div class="container my-4">
     <h1 class="mb-3">Products List</h1>
-
-    <p class="mb-3">
-        <a class="btn btn-success btn-sm" asp-page="Create">Create New Product</a>
-    </p>
+    @{
+        var user = HttpContext.Session.GetObjectFromJson<UserDto>("User");
+    }
+    @if (user != null && user.isAuthenticated)
+        @if (user.isAdmin)
+        {
+            <p class="mb-3">
+                <a class="btn btn-success btn-sm" asp-page="Create">Create New Product</a>
+            </p>
+        }
 
     <div class="table-responsive" style="min-height: 550px">
         <table class="table table-hover table-striped table-bordered text-center" style="table-layout: fixed; width: 100%; font-size: 0.875rem;">
@@ -19,8 +35,12 @@
                     <th style="width: 15%;">@Html.DisplayNameFor(model => model.Product[0].Name)</th>
                     <th style="width: 35%;">@Html.DisplayNameFor(model => model.Product[0].Description)</th>
                     <th style="width: 10%;">@Html.DisplayNameFor(model => model.Product[0].Price)</th>
-                    <th style="width: 10%;">@Html.DisplayNameFor(model => model.Product[0].Status)</th>
-                    <th style="width: 15%;">@Html.DisplayNameFor(model => model.Product[0].Category.Name)</th>
+                    @if (user != null && user.isAuthenticated)
+                        @if (user.isAdmin)
+                        {
+                            <th style="width: 10%;">@Html.DisplayNameFor(model => model.Product[0].Status)</th>
+                        }
+                    <th style="width: 15%;">@Html.DisplayNameFor(model => model.Product[0].Category)</th>
                     <th style="width: 15%;" class="text-center">Actions</th>
                 </tr>
             </thead>
@@ -31,13 +51,39 @@
                         <td style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">@Html.DisplayFor(modelItem => item.Name)</td>
                         <td style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">@Html.DisplayFor(modelItem => item.Description)</td>
                         <td>@Html.DisplayFor(modelItem => item.Price)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Status)</td>
+                        @if (user != null && user.isAuthenticated)
+                            @if (user.isAdmin)
+                            {
+                                <td>@Html.DisplayFor(modelItem => item.Status)</td>
+                            }
                         <td>@Html.DisplayFor(modelItem => item.Category.Name)</td>
-                        <td class="text-center">
-                            <a class="btn btn-info btn-sm" asp-page="./Edit" asp-route-id="@item.Id">Edit</a>
-                            <a class="btn btn-primary btn-sm" asp-page="./Details" asp-route-id="@item.Id">Details</a>
-                            <a class="btn btn-danger btn-sm" asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-                        </td>
+                        @if (user != null && user.isAuthenticated)
+                        {
+                            @if (user.isAdmin)
+                            {
+                                <td class="text-center">
+                                    <a class="btn btn-info btn-sm" asp-page="./Edit" asp-route-id="@item.Id">Edit</a>
+                                    <a class="btn btn-primary btn-sm" asp-page="./Details" asp-route-id="@item.Id">Details</a>
+                                    <a class="btn btn-danger btn-sm" asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                                </td>
+                            }
+                            else
+                            {
+                                <td class="text-center">
+                                    <a class="btn btn-info btn-sm" asp-page="/Cart/Index" asp-route-id="@item.Id">Add Cart</a>
+                                    <a class="btn btn-primary btn-sm" asp-page="./Details" asp-route-id="@item.Id">Details</a>
+                                </td>
+                            }
+                        }
+                        else
+                        {
+                            {
+                                <td class="text-center">
+                                    <a class="btn btn-info btn-sm" asp-page="/Account/Login" asp-route-id="@item.Id">Add Cart</a>
+                                    <a class="btn btn-primary btn-sm" asp-page="./Details" asp-route-id="@item.Id">Details</a>
+                                </td>
+                            }
+                        }
                     </tr>
                 }
             </tbody>

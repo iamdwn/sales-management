@@ -7,8 +7,77 @@
 }
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+<div class="register-container">
+    <div class="register-card card">
+        <div class="card-header position-relative text-center">
+            <a href="/" class="back-icon position-absolute" style="left: 10px; top: 50%; transform: translateY(-50%);">
+                <i class="bi bi-arrow-left"></i>
+            </a>
+            <span style="font-size: 1.5rem; font-weight: bold;">Register</span>
+        </div>
+        <div class="card-body">
+            <form method="post" action="/Account/Register">
+                <div class="form-group mb-3">
+                    <label for="Username">Username</label>
+                    <input type="text" class="form-control" id="Username" name="Username" required placeholder="Enter your username">
+                </div>
+                <div class="form-group mb-3">
+                    <label for="Email">Email</label>
+                    <input type="email" class="form-control" id="Email" name="Email" required placeholder="Enter your email">
+                </div>
+                <div class="form-group mb-3">
+                    <label for="Password">Password</label>
+                    <input type="password" class="form-control" id="Password" name="Password" required placeholder="Enter your password">
+                </div>
+                <div class="form-group mb-3">
+                    <label for="ConfirmPassword">Confirm Password</label>
+                    <input type="password" class="form-control" id="ConfirmPassword" name="ConfirmPassword" required placeholder="Confirm your password">
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-block">Register</button>
+                </div>
+                <div class="text-center mt-3">
+                    <p>
+                        Already have an account?
+                        <a href="/Account/Login" class="text-primary login-link">Login Now</a>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <style>
+    .back-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 70%;
+        background-color: #764ba2;
+        opacity: 50%;
+        color: white;
+        font-size: 1.5rem;
+        transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .back-icon i {
+            transition: transform 0.3s ease;
+        }
+
+        .back-icon:hover {
+            background-color: #5563d7; /* Darker background on hover */
+            transform: translateX(-3px); /* Slight left movement */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+        }
+
+            .back-icon:hover i {
+                transform: translateX(-2px); /* Additional arrow movement on hover */
+            }
+
     .register-container {
         min-height: 100vh;
         display: flex;
@@ -84,9 +153,9 @@
 
     .login-link {
         color: #0056b3;
-        font-weight: 500; 
-        text-decoration: none; 
-        font-size: 1rem; 
+        font-weight: 500;
+        text-decoration: none;
+        font-size: 1rem;
         transition: color 0.3s ease, text-shadow 0.3s ease;
         position: relative;
     }
@@ -115,42 +184,5 @@
             }
 </style>
 
-<div class="register-container">
-    <div class="register-card card">
-        <div class="card-header">
-            Register
-        </div>
-        <div class="card-body">
-            <form method="post" action="/Account/Register">
-                <div class="form-group mb-3">
-                    <label for="Username">Username</label>
-                    <input type="text" class="form-control" id="Username" name="Username" required placeholder="Enter your username">
-                </div>
-                <div class="form-group mb-3">
-                    <label for="Email">Email</label>
-                    <input type="email" class="form-control" id="Email" name="Email" required placeholder="Enter your email">
-                </div>
-                <div class="form-group mb-3">
-                    <label for="Password">Password</label>
-                    <input type="password" class="form-control" id="Password" name="Password" required placeholder="Enter your password">
-                </div>
-                <div class="form-group mb-3">
-                    <label for="ConfirmPassword">Confirm Password</label>
-                    <input type="password" class="form-control" id="ConfirmPassword" name="ConfirmPassword" required placeholder="Confirm your password">
-                </div>
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-primary btn-block">Register</button>
-                </div>
-                <div class="text-center mt-3">
-                    <p>
-                        Already have an account?
-                        <a href="/Account/Login" class="text-primary login-link">Login Now</a>
-                    </p>
-                </div>
-
-            </form>
-        </div>
-    </div>
-</div>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
