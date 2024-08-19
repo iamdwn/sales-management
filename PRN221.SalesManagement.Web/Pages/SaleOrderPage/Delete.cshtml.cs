@@ -55,12 +55,12 @@ namespace PRN221.SalesManagement.Web.Pages.SaleOrderPage
             if (saleorder != null)
             {
                 SaleOrder = saleorder;
-                listRemove = _context.OrderDetails
-                    .Include(o => o.SaleOrder)
-                    .Where(o => o.SaleOrder.Id.Equals(saleorder.Id))
-                    .ToList();
+                //listRemove = _context.OrderDetails
+                //    .Include(o => o.SaleOrder)
+                //    .Where(o => o.SaleOrder.Id.Equals(saleorder.Id))
+                //    .ToList();
 
-                _context.RemoveRange(listRemove);
+                //_context.RemoveRange(listRemove);
 
 
                 _context.SaleOrders.Remove(SaleOrder);

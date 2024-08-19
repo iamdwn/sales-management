@@ -60,7 +60,12 @@ namespace PRN221.SalesManagement.Web.Pages.ProductPage
                     .Where(o => o.Product.Id.Equals(product.Id))
                     .ToList();
 
-                _context.RemoveRange(listRemove);
+                foreach (var orderDetail in product.OrderDetails)
+                {
+                    _context.OrderDetails.Remove(orderDetail);
+                    _context.SaleOrders.Remove(orderDetail.SaleOrder);
+                }
+
                 _context.Products.Remove(Product);
                 await _context.SaveChangesAsync();
             }

@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using PRN221.SalesManagement.Repo.Dtos;
 using PRN221.SalesManagement.Repo.Interfaces;
 using PRN221.SalesManagement.Repo.Models;
 
@@ -15,6 +17,7 @@ namespace PRN221.SalesManagement.Web.Pages.ProductPage
         }
 
         public IList<Product> Product { get; set; } = new List<Product>();
+        public IList<CartItems> cartList { get; set; } = new List<CartItems>();
 
         public int PageIndex { get; set; } = 1;
         public int TotalPages { get; set; }
@@ -26,7 +29,11 @@ namespace PRN221.SalesManagement.Web.Pages.ProductPage
         {
             PageIndex = pageIndex < 1 ? 1 : pageIndex;
 
-            var totalItems = _unitOfWork.ProductRepository.Get().Count();
+            var totalItems = _unitOfWork.ProductRepository
+                .Get(
+                filter: p => p.Category.Status == true,
+                includeProperties: "Category")
+                .Count();
             TotalPages = (int)Math.Ceiling(totalItems / (double)PageSize);
 
             if (PageIndex > TotalPages)

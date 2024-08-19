@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using PRN221.SalesManagement.Repo.Models;
 using PRN221.SalesManagement.Repo.Persistences;
+using PRN221.SalesManagement.Repo.SessionExtensions;
 
 namespace PRN221.SalesManagement.Web.Pages.CategoryPage
 {
@@ -50,17 +51,29 @@ namespace PRN221.SalesManagement.Web.Pages.CategoryPage
             }
 
             var category = await _context.Categories.FindAsync(id);
-            var listRemove = new List<Product>();
+            var listProductRemove = new List<Product>();
 
             if (category != null)
             {
                 Category = category;
-                listRemove = _context.Products
+                listProductRemove = _context.Products
                     .Include(p => p.Category)
                     .Where(p => p.CategoryId.Equals(category.Id))
                     .ToList();
 
-                _context.RemoveRange(listRemove);
+                //HttpContext.Session.SetObjectAsJson("listProductRemove", listProductRemove);
+                //_context.RemoveRange(listProductRemove);
+
+                foreach (var product in listProductRemove)
+                {
+                    foreach (var orderDetail in product.OrderDetails)
+                    {
+                        _context.OrderDetails.Remove(orderDetail);
+                        _context.SaleOrders.Remove(orderDetail.SaleOrder);
+                    }
+                    _context.Products.Remove(product);
+                }
+
                 _context.Categories.Remove(Category);
                 await _context.SaveChangesAsync();
             }

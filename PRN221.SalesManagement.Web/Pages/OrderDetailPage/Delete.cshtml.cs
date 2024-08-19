@@ -56,6 +56,7 @@ namespace PRN221.SalesManagement.Web.Pages.OrderDetailPage
             {
                 OrderDetail = orderdetail;
 
+                _context.SaleOrders.Remove(OrderDetail.SaleOrder);
                 _context.OrderDetails.Remove(OrderDetail);
 
                 await _context.SaveChangesAsync();
