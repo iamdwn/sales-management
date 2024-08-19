@@ -50,10 +50,19 @@ namespace PRN221.SalesManagement.Web.Pages.OrderDetailPage
             }
 
             var orderdetail = await _context.OrderDetails.FindAsync(id);
+            var listRemove = new List<SaleOrder>();
+
             if (orderdetail != null)
             {
                 OrderDetail = orderdetail;
+                listRemove = _context.SaleOrders
+                    .Include(o => o.OrderDetails)
+                    .Where(o => o.Id.Equals(orderdetail.SaleOrder.Id))
+                    .ToList();
+                
+                _context.RemoveRange(listRemove);
                 _context.OrderDetails.Remove(OrderDetail);
+
                 await _context.SaveChangesAsync();
             }
 

@@ -50,9 +50,17 @@ namespace PRN221.SalesManagement.Web.Pages.CategoryPage
             }
 
             var category = await _context.Categories.FindAsync(id);
+            var listRemove = new List<Product>();
+
             if (category != null)
             {
                 Category = category;
+                listRemove = _context.Products
+                    .Include(p => p.Category)
+                    .Where(p => p.CategoryId.Equals(category.Id))
+                    .ToList();
+
+                _context.RemoveRange(listRemove);
                 _context.Categories.Remove(Category);
                 await _context.SaveChangesAsync();
             }
