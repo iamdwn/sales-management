@@ -7,7 +7,8 @@ namespace PRN221.SalesManagement.Web.Pages.Account
     {
         public IActionResult OnGet()
         {
-            HttpContext.Session.Clear();
+            //HttpContext.Session.Clear;
+            HttpContext.Session.Remove("User");
 
             return RedirectToPage("/Index");
         }

@@ -16,8 +16,6 @@ namespace PRN221.SalesManagement.Web.Pages.Account
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (ModelState.IsValid)
-            {
                 var existUser = HttpContext.Session.GetObjectFromJson<CustomerDto>($"{Input.Email}");
 
                 if (existUser != null)
@@ -34,6 +32,7 @@ namespace PRN221.SalesManagement.Web.Pages.Account
                     TempData["toast-error"] = "Password is not match!";
                     return Page();
                 }
+
                 var user = new CustomerDto
                 {
                     FullName = Input.FullName,
@@ -46,13 +45,6 @@ namespace PRN221.SalesManagement.Web.Pages.Account
                 HttpContext.Session.SetObjectAsJson($"{Input.Email}", user);
                 TempData["toast-success"] = "Register success!";
                 return RedirectToPage("/Account/Login");
-            }
-
-            else
-            {
-                TempData["toast-error"] = "Register failed!";
-                return Page();
-            }
         }
     }
 }

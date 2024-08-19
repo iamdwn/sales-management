@@ -52,13 +52,20 @@ namespace PRN221.SalesManagement.Web.Pages.Account
             {
                 if (existUser != null)
                 {
-                    user = new UserDto
+                    if (Input.Password.Equals(existUser.Password))
                     {
-                        isAuthenticated = true,
-                        FullName = existUser.FullName,
-                        Email = existUser.Email,
-                        isAdmin = false
-                    };
+                        user = new UserDto
+                        {
+                            isAuthenticated = true,
+                            FullName = existUser.FullName,
+                            Email = existUser.Email,
+                            isAdmin = false
+                        };
+                    } else
+                    {
+                        TempData["toast-error"] = "Invalid username or password!";
+                        return Page();
+                    }
                 }
 
                 if (Input.Email.Equals(adminEmail) && Input.Password.Equals(adminPassword))
