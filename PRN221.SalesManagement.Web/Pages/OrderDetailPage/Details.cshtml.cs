@@ -28,7 +28,10 @@ namespace PRN221.SalesManagement.Web.Pages.OrderDetailPage
                 return NotFound();
             }
 
-            var orderdetail = await _context.OrderDetails.FirstOrDefaultAsync(m => m.Id == id);
+            var orderdetail = await _context.OrderDetails
+                .Include(o => o.SaleOrder)
+                .Include(o => o.Product)
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (orderdetail == null)
             {
                 return NotFound();
