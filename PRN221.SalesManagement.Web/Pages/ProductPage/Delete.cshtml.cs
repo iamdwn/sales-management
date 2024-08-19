@@ -50,9 +50,17 @@ namespace PRN221.SalesManagement.Web.Pages.ProductPage
             }
 
             var product = await _context.Products.FindAsync(id);
+            var listRemove = new List<OrderDetail>();
+
             if (product != null)
             {
                 Product = product;
+                listRemove = _context.OrderDetails
+                    .Include(o => o.SaleOrder)
+                    .Where(o => o.Product.Id.Equals(product.Id))
+                    .ToList();
+
+                _context.RemoveRange(listRemove);
                 _context.Products.Remove(Product);
                 await _context.SaveChangesAsync();
             }
