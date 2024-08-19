@@ -2,53 +2,137 @@
 @model PRN221.SalesManagement.Web.Pages.SaleOrderPage.CreateModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Sale Order";
 }
 
-<h1>Create</h1>
+<h1 class="text-center my-4">Create Sale Order</h1>
 
-<h4>SaleOrder</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="SaleOrder.OrderDate" class="control-label"></label>
-                <input asp-for="SaleOrder.OrderDate" class="form-control" />
-                <span asp-validation-for="SaleOrder.OrderDate" class="text-danger"></span>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="SaleOrder.OrderDate" class="form-label"></label>
+                            <input asp-for="SaleOrder.OrderDate" class="form-control" />
+                            <span asp-validation-for="SaleOrder.OrderDate" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="SaleOrder.TotalAmount" class="form-label"></label>
+                            <input asp-for="SaleOrder.TotalAmount" class="form-control" />
+                            <span asp-validation-for="SaleOrder.TotalAmount" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="SaleOrder.CustomerName" class="form-label"></label>
+                            <input asp-for="SaleOrder.CustomerName" class="form-control" />
+                            <span asp-validation-for="SaleOrder.CustomerName" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="SaleOrder.Phone" class="form-label"></label>
+                            <input asp-for="SaleOrder.Phone" class="form-control" />
+                            <span asp-validation-for="SaleOrder.Phone" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" asp-for="SaleOrder.Status" />
+                            <label class="form-check-label">
+                                @Html.DisplayNameFor(model => model.SaleOrder.Status)
+                            </label>
+                        </div>
+
+                        <div class="d-grid">
+                            <input type="submit" value="Create" class="btn btn-primary btn-lg" />
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="SaleOrder.TotalAmount" class="control-label"></label>
-                <input asp-for="SaleOrder.TotalAmount" class="form-control" />
-                <span asp-validation-for="SaleOrder.TotalAmount" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SaleOrder.CustomerName" class="control-label"></label>
-                <input asp-for="SaleOrder.CustomerName" class="form-control" />
-                <span asp-validation-for="SaleOrder.CustomerName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SaleOrder.Phone" class="control-label"></label>
-                <input asp-for="SaleOrder.Phone" class="form-control" />
-                <span asp-validation-for="SaleOrder.Phone" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="SaleOrder.Status" /> @Html.DisplayNameFor(model => model.SaleOrder.Status)
-                </label>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-page="Index">Back to List</a>
+<div class="text-center mt-4">
+    <a asp-page="Index" class="btn btn-secondary">Back to List</a>
 </div>
 
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f7f7f7;
+        color: #333;
+    }
+
+    h1.text-center {
+        font-size: 2.5rem;
+        font-weight: 300;
+        color: #0056b3;
+    }
+
+    .container {
+        margin-top: 2rem;
+    }
+
+    .card {
+        border: none;
+        border-radius: 0.5rem;
+        background-color: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-body {
+        padding: 2rem;
+    }
+
+    .form-label {
+        font-weight: 500;
+    }
+
+    .form-control {
+        border-radius: 0.25rem;
+        border: 1px solid #ccc;
+        padding: 0.75rem;
+    }
+
+    .form-check-input {
+        margin-right: 0.5rem;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+        font-size: 1rem;
+        padding: 0.75rem 1.25rem;
+        border-radius: 0.25rem;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+        font-size: 1rem;
+        padding: 0.75rem 1.25rem;
+        border-radius: 0.25rem;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+        }
+</style>
+
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
