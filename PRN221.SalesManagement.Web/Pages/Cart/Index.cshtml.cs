@@ -1,93 +1,73 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using PRN221.SalesManagement.Repo.Dtos;
+using PRN221.SalesManagement.Repo.Impl;
+using PRN221.SalesManagement.Repo.Interfaces;
+using PRN221.SalesManagement.Repo.SessionExtensions;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Http;
 
 namespace PRN221.SalesManagement.Web.Pages.Cart
 {
     public class IndexModel : PageModel
     {
-        private const string CartSessionKey = "CartItems";
+        public List<CartItems> CartItems { get; set; }
 
-        public List<CartItems> CartItems { get; set; } = new List<CartItems>();
-        [BindProperty]
-        public CartItems NewItem { get; set; } = new CartItems();
-        public double Subtotal { get; private set; }
-        public double Tax { get; private set; }
-        public double Shipping { get; private set; } = 5.99;
-        public double Total { get; private set; }
+        public double Subtotal => CartItems.Sum(x => x.Price * x.Quantity);
+        public double Tax => Subtotal * 0.1;
+        public double Shipping => 5.00; 
+        public double Total => Subtotal + Tax + Shipping;
+        public IUnitOfWork _unitOfWork;
+
+        public IndexModel(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
 
         public void OnGet()
         {
-            // Retrieve cart from session or initialize a new list
-            CartItems = HttpContext.Session.Get<List<CartItems>>(CartSessionKey) ?? new List<CartItems>();
-            CalculateTotals();
+            CartItems = HttpContext.Session.GetObjectFromJson<List<CartItems>>("Cart") ?? new List<CartItems>();
         }
 
-        public IActionResult OnPostAddItem()
+        public IActionResult OnPost(int ProductId, int Quantity)
         {
-            if (ModelState.IsValid)
-            {
-                CartItems = HttpContext.Session.Get<List<CartItems>>(CartSessionKey) ?? new List<CartItems>();
-                CartItems.Add(NewItem);
-                HttpContext.Session.Set(CartSessionKey, CartItems);
-                NewItem = new CartItems(); // Clear form after adding
-                CalculateTotals();
-            }
-            return Page();
-        }
+            var cart = HttpContext.Session.GetObjectFromJson<List<CartItems>>("Cart") ?? new List<CartItems>();
+            var product = _unitOfWork.ProductRepository.GetByID(ProductId);
 
-        public IActionResult OnPostUpdateQuantity(int index, double quantity)
-        {
-            if (index >= 0 && index < CartItems.Count)
+            var cartItem = cart.FirstOrDefault(x => x.ProductId == ProductId);
+            if (cartItem == null)
             {
-                CartItems = HttpContext.Session.Get<List<CartItems>>(CartSessionKey) ?? new List<CartItems>();
-                CartItems[index].Quantity = quantity;
-                HttpContext.Session.Set(CartSessionKey, CartItems);
-                CalculateTotals();
+                cart.Add(new CartItems { ProductId = ProductId, ProductName = product.Name, Price = (double) product.Price, Quantity = Quantity });
             }
-            return Page();
+            else
+            {
+                cartItem.Quantity += Quantity;
+            }
+
+            HttpContext.Session.SetObjectAsJson("Cart", cart);
+            return RedirectToPage("/Cart/Index");
         }
 
         public IActionResult OnPostRemoveItem(int index)
         {
-            if (index >= 0 && index < CartItems.Count)
+            var cart = HttpContext.Session.GetObjectFromJson<List<CartItems>>("Cart");
+            if (cart != null && index >= 0 && index < cart.Count)
             {
-                CartItems = HttpContext.Session.Get<List<CartItems>>(CartSessionKey) ?? new List<CartItems>();
-                CartItems.RemoveAt(index);
-                HttpContext.Session.Set(CartSessionKey, CartItems);
-                CalculateTotals();
+                cart.RemoveAt(index);
+                HttpContext.Session.SetObjectAsJson("Cart", cart);
             }
-            return Page();
+            return RedirectToPage();
         }
 
-        private void CalculateTotals()
+        public IActionResult OnPostUpdateQuantity(int index, int quantity)
         {
-            Subtotal = CartItems.Sum(item => item.Price * item.Quantity);   
-            Tax = Subtotal * 0.1; // Example tax calculation (10%)
-            Total = Subtotal + Tax + Shipping;
-        }
-    }
-
-    public class CartItems
-    {
-        public string Name { get; set; }
-        public double Price { get; set; }
-        public double Quantity { get; set; }
-    }
-
-    public static class SessionExtensions
-    {
-        public static void Set<T>(this ISession session, string key, T value)
-        {
-            session.SetString(key, System.Text.Json.JsonSerializer.Serialize(value));
-        }
-
-        public static T Get<T>(this ISession session, string key)
-        {
-            var value = session.GetString(key);
-            return value == null ? default : System.Text.Json.JsonSerializer.Deserialize<T>(value);
+            var cart = HttpContext.Session.GetObjectFromJson<List<CartItems>>("Cart");
+            if (cart != null && index >= 0 && index < cart.Count)
+            {
+                cart[index].Quantity = quantity;
+                HttpContext.Session.SetObjectAsJson("Cart", cart);
+            }
+            return RedirectToPage();
         }
     }
 }

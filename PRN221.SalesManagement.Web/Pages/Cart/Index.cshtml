@@ -1,5 +1,6 @@
 ﻿@page
 @model PRN221.SalesManagement.Web.Pages.Cart.IndexModel
+
 @{
     ViewData["Title"] = "Shopping Cart";
 }
@@ -10,332 +11,142 @@
     <div class="row">
         <!-- Cart Items Section -->
         <div class="col-md-8 cart-items">
-            @for (var i = 0; i < Model.CartItems.Count; i++)
+            @if (Model.CartItems.Count == 0)
             {
-                var item = Model.CartItems[i];
-                <div class="cart-item">
-                    <div class="cart-item-details">
-                        <div class="item-header">
-                            <h5 class="item-name">@item.Name</h5>
-                            <form method="post" asp-page-handler="RemoveItem" class="remove-form">
-                                <input type="hidden" name="index" value="@i" />
-                                <button type="submit" class="btn btn-danger btn-sm remove-btn">
-                                    <i class="fas fa-trash-alt"></i> Remove
-                                </button>
-                            </form>
-                        </div>
-                        <p class="item-price">Price: $@item.Price</p>
-                        <form method="post" asp-page-handler="UpdateQuantity">
-                            <input type="hidden" name="index" value="@i" />
-                            <div class="quantity-control">
-                                <button type="submit" name="quantity" value="@((item.Quantity > 1) ? item.Quantity - 1 : item.Quantity)" class="btn btn-sm btn-outline-secondary quantity-btn">-</button>
-                                <input type="number" name="quantity" value="@item.Quantity" min="1" step="0.01" class="cart-item-quantity" />
-                                <button type="submit" name="quantity" value="@((item.Quantity < 99) ? item.Quantity + 1 : item.Quantity)" class="btn btn-sm btn-outline-secondary quantity-btn">+</button>
-                            </div>
-                        </form>
-                        <p class="item-total">Total: $@(item.Price * item.Quantity)</p>
-                    </div>
-                </div>
+                <p>Your cart is empty.</p>
             }
-
-            <form method="post" asp-page-handler="AddItem" class="add-item-form">
-                <h4>Add New Item</h4>
-                <div class="form-group">
-                    <label for="productName">Product Name</label>
-                    <input type="text" id="productName" name="NewItem.Name" class="form-control" placeholder="Product Name" value="@Model.NewItem.Name" required />
-                </div>
-                <div class="form-group">
-                    <label for="productPrice">Price</label>
-                    <input type="number" id="productPrice" name="NewItem.Price" class="form-control" placeholder="Price" value="@Model.NewItem.Price" step="0.01" min="0" required />
-                </div>
-                <div class="form-group">
-                    <label for="productQuantity">Quantity</label>
-                    <input type="number" id="productQuantity" name="NewItem.Quantity" class="form-control" placeholder="Quantity" value="@Model.NewItem.Quantity" min="1" step="0.01" required />
-                </div>
-                <button type="submit" class="btn btn-primary btn-lg">Add Item</button>
-            </form>
-
+            else
+            {
+                @for (var i = 0; i < Model.CartItems.Count; i++)
+                {
+                    var item = Model.CartItems[i];
+                    <div class="cart-item mb-4" data-item-index="@i" data-item-price="@item.Price">
+                        <div class="cart-item-details d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="item-name">@item.ProductName</h5>
+                                <p class="item-price text-muted">Price: $@item.Price</p>
+                                <p class="item-total text-muted">Total: $<span class="item-total-price">@item.Price * @item.Quantity</span></p>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <form method="post" asp-page-handler="UpdateQuantity" class="quantity-form mr-3">
+                                    <input type="hidden" name="index" value="@i" />
+                                    <div class="quantity-control input-group">
+                                        <div class="input-group-prepend">
+                                            <button type="button" onclick="decreaseQuantity(@i)" class="btn btn-outline-secondary">-</button>
+                                        </div>
+                                        <input type="number" name="quantity" id="quantity-@i" value="@item.Quantity" min="1" max="99" class="form-control text-center" onchange="updateTotal(this)" />
+                                        <div class="input-group-append">
+                                            <button type="button" onclick="increaseQuantity(@i)" class="btn btn-outline-secondary">+</button>
+                                        </div>
+                                    </div>
+                                </form>
+                                <form method="post" asp-page-handler="RemoveItem" class="d-inline">
+                                    <input type="hidden" name="index" value="@i" />
+                                    <button type="submit" class="btn btn-danger" title="Remove from Cart">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
         </div>
 
         <!-- Cart Summary Section -->
         <div class="col-md-4 cart-summary">
             <h4>Order Summary</h4>
-            <div class="summary-item">
+            <div class="summary-item d-flex justify-content-between">
                 <span>Subtotal:</span>
-                <span>$@Model.Subtotal.ToString("F2")</span>
+                <span>$<span id="subtotal">@Model.Subtotal.ToString("F2")</span></span>
             </div>
-            <div class="summary-item">
+            <div class="summary-item d-flex justify-content-between">
                 <span>Tax:</span>
-                <span>$@Model.Tax.ToString("F2")</span>
+                <span>$<span id="tax">@Model.Tax.ToString("F2")</span></span>
             </div>
-            <div class="summary-item">
+            <div class="summary-item d-flex justify-content-between">
                 <span>Shipping:</span>
-                <span>$@Model.Shipping.ToString("F2")</span>
+                <span>$<span id="shipping">@Model.Shipping.ToString("F2")</span></span>
             </div>
-            <div class="summary-item total">
+            <div class="summary-item total d-flex justify-content-between font-weight-bold">
                 <span>Total:</span>
-                <span>$@Model.Total.ToString("F2")</span>
+                <span>$<span id="total">@Model.Total.ToString("F2")</span></span>
             </div>
-            <button class="btn btn-primary btn-lg btn-block checkout-btn">Proceed to Checkout</button>
+            <button class="btn btn-primary btn-lg btn-block checkout-btn mt-4" title="Proceed to Checkout">Proceed to Checkout</button>
         </div>
     </div>
 </div>
 
+
+
 <style>
-    /* Global Styles */
-    .container {
-        margin-top: 30px;
-        font-family: 'Roboto', sans-serif;
-        color: #333;
-    }
-
-    h2 {
-        font-weight: 700;
-        color: #444;
-        border-bottom: 2px solid #ddd;
-        padding-bottom: 10px;
-        margin-bottom: 20px;
-    }
-
-    /* Cart Item Styles */
     .cart-item {
-        display: flex;
-        align-items: flex-start;
-        margin-bottom: 30px;
-        padding: 15px;
-        border-radius: 10px;
-        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-bottom: 1px solid #eaeaea;
+        padding-bottom: 10px;
     }
 
-        .cart-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
-        }
-
-    .cart-item-details {
-        flex-grow: 1;
-        position: relative;
-        padding-left: 20px;
-    }
-
-    .item-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
-    }
-
-    .item-name {
-        font-size: 1.4rem;
-        font-weight: bold;
-        color: #007bff;
-        transition: color 0.3s ease;
-    }
-
-        .item-name:hover {
-            color: #0056b3;
-        }
-
-    .item-price, .item-total {
-        font-size: 1.2rem;
-        color: #666;
-        margin-bottom: 10px;
-    }
-
-    .item-total {
-        font-weight: bold;
-        color: #333;
-    }
-
-    .quantity-control {
-        display: flex;
-        align-items: center;
-        margin-bottom: 15px;
-    }
-
-    .cart-item-quantity {
-        width: 70px;
-        text-align: center;
-        margin: 0 10px;
-        border: 2px solid #ced4da;
-        border-radius: 10px;
-        font-size: 1.1rem;
-        padding: 5px;
-        transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        appearance: auto;
-        box-sizing: border-box;
-    }
-
-        .cart-item-quantity:focus {
-            border-color: #007bff;
-            box-shadow: 0px 0px 8px rgba(0, 123, 255, 0.5);
-        }
-
-    .quantity-btn {
-        font-size: 1.2rem;
-        transition: background-color 0.3s ease, color 0.3s ease;
-    }
-
-        .quantity-btn:hover {
-            background-color: #007bff;
-            color: #fff;
-        }
-
-    .remove-btn {
-        font-size: 1rem;
-        transition: transform 0.3s ease, background-color 0.3s ease;
-    }
-
-        .remove-btn:hover {
-            background-color: #dc3545;
-            color: white;
-            transform: scale(1.1);
-        }
-
-    /* Cart Summary Styles */
-    .cart-summary {
-        background-color: #fff;
-        padding: 25px;
-        border-radius: 10px;
-        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-        .cart-summary:hover {
-            transform: translateY(-5px);
-            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
-        }
-
-    .summary-item {
-        display: flex;
-        justify-content: space-between;
-        padding: 10px 0;
-        font-size: 1.2rem;
-        border-bottom: 1px solid #ddd;
-    }
-
-        .summary-item.total {
-            font-weight: bold;
-            font-size: 1.4rem;
-            color: #007bff;
+        .cart-item:last-child {
             border-bottom: none;
         }
 
-    .checkout-btn {
-        margin-top: 20px;
-        padding: 15px;
-        border-radius: 10px;
-        font-size: 1.2rem;
-        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    .quantity-control {
+        width: 120px;
     }
-
-        .checkout-btn:hover {
-            background-color: #0056b3;
-            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
-        }
-
-    .add-item-form {
-        margin-top: 20px;
-        padding: 15px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        background-color: #f9f9f9;
-        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .add-item-form h4 {
-        margin-bottom: 15px;
-        font-size: 1.5rem;
-        color: #333;
-    }
-
-    .form-group {
-        margin-bottom: 15px;
-    }
-
-        .form-group label {
-            font-weight: bold;
-            color: #555;
-        }
-
-    .form-control {
-        border-radius: 5px;
-        border: 1px solid #ccc;
-        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-        font-size: 1rem;
-        padding: 10px;
-    }
-
-    .btn-primary {
-        background-color: #007bff;
-        border-color: #007bff;
-        font-size: 1.1rem;
-        padding: 10px 20px;
-        border-radius: 5px;
-        transition: background-color 0.3s ease, border-color 0.3s ease;
-    }
-
-        .btn-primary:hover {
-            background-color: #0056b3;
-            border-color: #004a9a;
-        }
 </style>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function () {
-        // Add item
-        $('#addItemForm').on('submit', function (event) {
-            event.preventDefault(); // Prevent default form submission
-            $.ajax({
-                type: 'POST',
-                url: $(this).attr('action'),
-                data: $(this).serialize(),
-                success: function (response) {
-                    // Update the cart UI with the response
-                    $('#cartContainer').html(response);
-                },
-                error: function () {
-                    alert('Error adding item.');
-                }
-            });
+    // Function to update total price for an item when quantity is changed
+    function updateTotal(element) {
+        var index = element.closest('.cart-item').getAttribute("data-item-index");
+        var quantity = parseFloat(element.value);
+        var item = document.querySelector('.cart-item[data-item-index="' + index + '"]');
+        var price = parseFloat(item.getAttribute("data-item-price"));
+        var totalElement = item.querySelector(".item-total-price");
+        var newTotal = (quantity * price).toFixed(2);
+        totalElement.innerText = newTotal;
+
+        // Update the subtotal and total amounts
+        updateSubtotalAndTotal();
+    }
+
+    // Increase quantity
+    function increaseQuantity(index) {
+        var quantityInput = document.getElementById("quantity-" + index);
+        var currentQuantity = parseInt(quantityInput.value);
+        if (currentQuantity < 99) {
+            quantityInput.value = currentQuantity + 1;
+            updateTotal(quantityInput);
+        }
+    }
+
+    // Decrease quantity
+    function decreaseQuantity(index) {
+        var quantityInput = document.getElementById("quantity-" + index);
+        var currentQuantity = parseInt(quantityInput.value);
+        if (currentQuantity > 1) {
+            quantityInput.value = currentQuantity - 1;
+            updateTotal(quantityInput);
+        }
+    }
+
+    // Function to update subtotal and total in the order summary
+    function updateSubtotalAndTotal() {
+        var subtotal = 0;
+        var taxRate = 0.1; // Example tax rate (10%)
+        var shippingCost = 5.00; // Example flat shipping cost
+
+        var itemTotals = document.querySelectorAll(".item-total-price");
+
+        itemTotals.forEach(function (item) {
+            subtotal += parseFloat(item.innerText);
         });
 
-        // Remove item
-        $('.remove-btn').on('click', function () {
-            var itemId = $(this).data('item-id'); // Get item ID from data attribute
-            $.ajax({
-                type: 'POST',
-                url: '/Cart/RemoveItem', // URL to handle removal
-                data: { id: itemId },
-                success: function (response) {
-                    $('#cartContainer').html(response);
-                },
-                error: function () {
-                    alert('Error removing item.');
-                }
-            });
-        });
+        var tax = (subtotal * taxRate).toFixed(2);
+        var total = (subtotal + parseFloat(tax) + shippingCost).toFixed(2);
 
-        // Update item quantity
-        $('.update-quantity').on('change', function () {
-            var itemId = $(this).data('item-id');
-            var newQuantity = $(this).val();
-            $.ajax({
-                type: 'POST',
-                url: '/Cart/UpdateQuantity', // URL to handle update
-                data: { id: itemId, quantity: newQuantity },
-                success: function (response) {
-                    $('#cartContainer').html(response);
-                },
-                error: function () {
-                    alert('Error updating quantity.');
-                }
-            });
-        });
-    });
+        document.getElementById("subtotal").innerText = subtotal.toFixed(2);
+        document.getElementById("tax").innerText = tax;
+        document.getElementById("shipping").innerText = shippingCost.toFixed(2);
+        document.getElementById("total").innerText = total;
+    }
 </script>
-
-

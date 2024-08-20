@@ -86,9 +86,18 @@
                             else
                             {
                                 <td class="text-center">
-                                    <a class="btn btn-info btn-sm" asp-page="/Cart/Index" asp-route-id="@item.Id">Add Cart</a>
+                                    <form asp-page="/Cart/Index" method="post">
+                                        <input type="hidden" name="ProductId" value="@item.Id" />
+                                        <input type="hidden" name="ProductName" value="@item.Name" />
+                                        <input type="hidden" name="Description" value="@item.Description" />
+                                        <input type="hidden" name="Price" value="@item.Price" />
+                                        <input type="hidden" name="Quantity" value="1" />
+                                        <input type="hidden" name="Category" value="@item.Category.Name" />
+                                        <button type="submit" class="btn btn-info btn-sm">Add Cart</button>
+                                    </form>
                                     <a class="btn btn-primary btn-sm" asp-page="./Details" asp-route-id="@item.Id">Details</a>
                                 </td>
+
                             }
                         }
                         else
