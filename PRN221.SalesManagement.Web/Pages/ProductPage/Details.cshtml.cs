@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using PRN221.SalesManagement.Repo.Interfaces;
 using PRN221.SalesManagement.Repo.Models;
 using PRN221.SalesManagement.Repo.Persistences;
 
@@ -12,11 +13,11 @@ namespace PRN221.SalesManagement.Web.Pages.ProductPage
 {
     public class DetailsModel : PageModel
     {
-        private readonly PRN221.SalesManagement.Repo.Persistences.SalesManagementContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public DetailsModel(PRN221.SalesManagement.Repo.Persistences.SalesManagementContext context)
+        public DetailsModel(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         public Product Product { get; set; } = default!;
@@ -28,14 +29,18 @@ namespace PRN221.SalesManagement.Web.Pages.ProductPage
                 return NotFound();
             }
 
-            var product = await _context.Products.Include(c => c.Category).FirstOrDefaultAsync(m => m.Id == id);
+            var product = _unitOfWork.ProductRepository.Get(
+                includeProperties: "Category",
+                filter: m => m.Id == id
+                );
+
             if (product == null)
             {
                 return NotFound();
             }
             else
             {
-                Product = product;
+                Product = product.FirstOrDefault();
             }
             return Page();
         }

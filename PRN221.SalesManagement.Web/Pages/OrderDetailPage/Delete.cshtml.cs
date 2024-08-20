@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using PRN221.SalesManagement.Repo.Interfaces;
 using PRN221.SalesManagement.Repo.Models;
 using PRN221.SalesManagement.Repo.Persistences;
 
@@ -12,11 +13,11 @@ namespace PRN221.SalesManagement.Web.Pages.OrderDetailPage
 {
     public class DeleteModel : PageModel
     {
-        private readonly PRN221.SalesManagement.Repo.Persistences.SalesManagementContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public DeleteModel(PRN221.SalesManagement.Repo.Persistences.SalesManagementContext context)
+        public DeleteModel(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         [BindProperty]
@@ -29,7 +30,7 @@ namespace PRN221.SalesManagement.Web.Pages.OrderDetailPage
                 return NotFound();
             }
 
-            var orderdetail = await _context.OrderDetails.FirstOrDefaultAsync(m => m.Id == id);
+            var orderdetail = _unitOfWork.OrderDetailRepository.GetByID(id);
 
             if (orderdetail == null)
             {
@@ -49,17 +50,17 @@ namespace PRN221.SalesManagement.Web.Pages.OrderDetailPage
                 return NotFound();
             }
 
-            var orderdetail = await _context.OrderDetails.FindAsync(id);
+            var orderdetail = _unitOfWork.OrderDetailRepository.GetByID(id);
 
 
             if (orderdetail != null)
             {
                 OrderDetail = orderdetail;
 
-                _context.SaleOrders.Remove(OrderDetail.SaleOrder);
-                _context.OrderDetails.Remove(OrderDetail);
+                _unitOfWork.SaleOrderRepository.Delete(OrderDetail.SaleOrder);
+                _unitOfWork.OrderDetailRepository.Delete(OrderDetail);
 
-                await _context.SaveChangesAsync();
+                _unitOfWork.Save();
             }
 
             return RedirectToPage("./Index");

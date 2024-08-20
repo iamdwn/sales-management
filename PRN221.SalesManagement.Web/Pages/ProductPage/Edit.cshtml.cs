@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using PRN221.SalesManagement.Repo.Interfaces;
 using PRN221.SalesManagement.Repo.Models;
 using PRN221.SalesManagement.Repo.Persistences;
 
@@ -13,11 +14,11 @@ namespace PRN221.SalesManagement.Web.Pages.ProductPage
 {
     public class EditModel : PageModel
     {
-        private readonly PRN221.SalesManagement.Repo.Persistences.SalesManagementContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public EditModel(PRN221.SalesManagement.Repo.Persistences.SalesManagementContext context)
+        public EditModel(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         [BindProperty]
@@ -30,30 +31,31 @@ namespace PRN221.SalesManagement.Web.Pages.ProductPage
                 return NotFound();
             }
 
-            var product =  await _context.Products.FirstOrDefaultAsync(m => m.Id == id);
+            var product = _unitOfWork.ProductRepository.GetByID(id);
             if (product == null)
             {
                 return NotFound();
             }
             Product = product;
-           ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
+           ViewData["CategoryId"] = new SelectList(_unitOfWork.CategoryRepository.Get(), "Id", "Name");
             return Page();
         }
 
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(Product product)
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            _context.Attach(Product).State = EntityState.Modified;
+            //_context.Attach(Product).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                _unitOfWork.ProductRepository.Update(product);
+                _unitOfWork.Save();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -72,7 +74,7 @@ namespace PRN221.SalesManagement.Web.Pages.ProductPage
 
         private bool ProductExists(int id)
         {
-            return _context.Products.Any(e => e.Id == id);
+            return _unitOfWork.ProductRepository.GetByID(id) != null ? true : false;
         }
     }
 }

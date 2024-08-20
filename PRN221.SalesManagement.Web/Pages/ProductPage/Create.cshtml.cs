@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using PRN221.SalesManagement.Repo.Interfaces;
 using PRN221.SalesManagement.Repo.Models;
 using PRN221.SalesManagement.Repo.Persistences;
 
@@ -12,18 +13,19 @@ namespace PRN221.SalesManagement.Web.Pages.ProductPage
 {
     public class CreateModel : PageModel
     {
-        private readonly PRN221.SalesManagement.Repo.Persistences.SalesManagementContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CreateModel(PRN221.SalesManagement.Repo.Persistences.SalesManagementContext context)
+        public CreateModel(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
+
 
         public IActionResult OnGet()
         {
-            var activeCategories = _context.Categories
-                                           .Where(c => c.Status == true)
-                                           .ToList();
+            var activeCategories = _unitOfWork.CategoryRepository.Get(
+                filter: c => c.Status == true
+                ).ToList();
 
             ViewData["CategoryId"] = new SelectList(activeCategories, "Id", "Name");
             return Page();
@@ -41,8 +43,8 @@ namespace PRN221.SalesManagement.Web.Pages.ProductPage
                 return Page();
             }
 
-            _context.Products.Add(Product);
-            await _context.SaveChangesAsync();
+            _unitOfWork.ProductRepository.Insert(Product);
+            _unitOfWork.Save();
 
             return RedirectToPage("./Index");
         }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using PRN221.SalesManagement.Repo.Interfaces;
 using PRN221.SalesManagement.Repo.Models;
 using PRN221.SalesManagement.Repo.Persistences;
 
@@ -12,17 +13,17 @@ namespace PRN221.SalesManagement.Web.Pages.OrderDetailPage
 {
     public class CreateModel : PageModel
     {
-        private readonly PRN221.SalesManagement.Repo.Persistences.SalesManagementContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CreateModel(PRN221.SalesManagement.Repo.Persistences.SalesManagementContext context)
+        public CreateModel(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         public IActionResult OnGet()
         {
-        ViewData["OrderId"] = new SelectList(_context.SaleOrders, "Id", "CustomerName");
-        ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name");
+        ViewData["OrderId"] = new SelectList(_unitOfWork.SaleOrderRepository.Get(), "Id", "CustomerName");
+        ViewData["ProductId"] = new SelectList(_unitOfWork.ProductRepository.Get(), "Id", "Name");
             return Page();
         }
 
@@ -37,8 +38,8 @@ namespace PRN221.SalesManagement.Web.Pages.OrderDetailPage
                 return Page();
             }
 
-            _context.OrderDetails.Add(OrderDetail);
-            await _context.SaveChangesAsync();
+            _unitOfWork.OrderDetailRepository.Insert(OrderDetail);
+            _unitOfWork.Save();
 
             return RedirectToPage("./Index");
         }

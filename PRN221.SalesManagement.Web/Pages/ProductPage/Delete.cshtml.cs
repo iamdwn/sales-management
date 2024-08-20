@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using PRN221.SalesManagement.Repo.Interfaces;
 using PRN221.SalesManagement.Repo.Models;
 using PRN221.SalesManagement.Repo.Persistences;
 
@@ -12,11 +13,11 @@ namespace PRN221.SalesManagement.Web.Pages.ProductPage
 {
     public class DeleteModel : PageModel
     {
-        private readonly PRN221.SalesManagement.Repo.Persistences.SalesManagementContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public DeleteModel(PRN221.SalesManagement.Repo.Persistences.SalesManagementContext context)
+        public DeleteModel(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         [BindProperty]
@@ -29,7 +30,7 @@ namespace PRN221.SalesManagement.Web.Pages.ProductPage
                 return NotFound();
             }
 
-            var product = await _context.Products.FirstOrDefaultAsync(m => m.Id == id);
+            var product = _unitOfWork.ProductRepository.GetByID(id);
 
             if (product == null)
             {
@@ -49,25 +50,26 @@ namespace PRN221.SalesManagement.Web.Pages.ProductPage
                 return NotFound();
             }
 
-            var product = await _context.Products.FindAsync(id);
+            var product = _unitOfWork.ProductRepository.GetByID(id);
             var listRemove = new List<OrderDetail>();
 
             if (product != null)
             {
                 Product = product;
-                listRemove = _context.OrderDetails
-                    .Include(o => o.SaleOrder)
-                    .Where(o => o.Product.Id.Equals(product.Id))
+                listRemove = _unitOfWork.OrderDetailRepository.Get(
+                    includeProperties: "SaleOrder",
+                    filter: o => o.Product.Id.Equals(product.Id)
+                    )
                     .ToList();
 
                 foreach (var orderDetail in product.OrderDetails)
                 {
-                    _context.OrderDetails.Remove(orderDetail);
-                    _context.SaleOrders.Remove(orderDetail.SaleOrder);
+                    _unitOfWork.OrderDetailRepository.Delete(orderDetail);
+                    _unitOfWork.SaleOrderRepository.Delete(orderDetail.SaleOrder);
                 }
 
-                _context.Products.Remove(Product);
-                await _context.SaveChangesAsync();
+                _unitOfWork.ProductRepository.Delete(Product);
+                _unitOfWork.Save();
             }
 
             return RedirectToPage("./Index");
