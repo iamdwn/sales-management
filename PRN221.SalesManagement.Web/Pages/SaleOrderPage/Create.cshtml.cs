@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using PRN221.SalesManagement.Repo.Interfaces;
 using PRN221.SalesManagement.Repo.Models;
 using PRN221.SalesManagement.Repo.Persistences;
 
@@ -12,11 +13,11 @@ namespace PRN221.SalesManagement.Web.Pages.SaleOrderPage
 {
     public class CreateModel : PageModel
     {
-        private readonly PRN221.SalesManagement.Repo.Persistences.SalesManagementContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CreateModel(PRN221.SalesManagement.Repo.Persistences.SalesManagementContext context)
+        public CreateModel(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         public IActionResult OnGet()
@@ -35,8 +36,8 @@ namespace PRN221.SalesManagement.Web.Pages.SaleOrderPage
                 return Page();
             }
 
-            _context.SaleOrders.Add(SaleOrder);
-            await _context.SaveChangesAsync();
+            _unitOfWork.SaleOrderRepository.Insert(SaleOrder);
+            _unitOfWork.Save();
 
             return RedirectToPage("./Index");
         }

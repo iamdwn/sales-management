@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using PRN221.SalesManagement.Repo.Impl;
+using PRN221.SalesManagement.Repo.Interfaces;
 using PRN221.SalesManagement.Repo.Models;
 using PRN221.SalesManagement.Repo.Persistences;
 
@@ -13,11 +15,11 @@ namespace PRN221.SalesManagement.Web.Pages.SaleOrderPage
 {
     public class EditModel : PageModel
     {
-        private readonly PRN221.SalesManagement.Repo.Persistences.SalesManagementContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public EditModel(PRN221.SalesManagement.Repo.Persistences.SalesManagementContext context)
+        public EditModel(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         [BindProperty]
@@ -30,7 +32,7 @@ namespace PRN221.SalesManagement.Web.Pages.SaleOrderPage
                 return NotFound();
             }
 
-            var saleorder =  await _context.SaleOrders.FirstOrDefaultAsync(m => m.Id == id);
+            var saleorder = _unitOfWork.SaleOrderRepository.GetByID(id);
             if (saleorder == null)
             {
                 return NotFound();
@@ -41,18 +43,19 @@ namespace PRN221.SalesManagement.Web.Pages.SaleOrderPage
 
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(SaleOrder saleOrder)
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            _context.Attach(SaleOrder).State = EntityState.Modified;
+            //_context.Attach(SaleOrder).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                _unitOfWork.SaleOrderRepository.Update(saleOrder);
+                _unitOfWork.Save();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -71,7 +74,7 @@ namespace PRN221.SalesManagement.Web.Pages.SaleOrderPage
 
         private bool SaleOrderExists(int id)
         {
-            return _context.SaleOrders.Any(e => e.Id == id);
+            return _unitOfWork.SaleOrderRepository.GetByID(id) != null ? true : false;
         }
     }
 }
