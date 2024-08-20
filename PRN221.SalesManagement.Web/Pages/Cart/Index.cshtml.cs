@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using PRN221.SalesManagement.Repo.Dtos;
@@ -31,7 +32,7 @@ namespace PRN221.SalesManagement.Web.Pages.Cart
 
             if (existingItem != null)
             {
-                // Update quantity if item exists
+                // Update quantity
                 existingItem.Quantity += quantity;
             }
             else
@@ -46,10 +47,12 @@ namespace PRN221.SalesManagement.Web.Pages.Cart
                 });
             }
 
-            // Save the updated cart back to session
+            // Save the updated cart
             HttpContext.Session.SetObjectAsJson("Cart", CartItems);
+            int cartItemCount = (int)CartItems.Sum(item => item.Quantity);
+            HttpContext.Session.SetInt32("cartItemCount", cartItemCount);
 
-            return RedirectToPage("/Cart/Index");
+            return RedirectToPage("/ProductPage/Index");
         }
 
 
@@ -62,6 +65,8 @@ namespace PRN221.SalesManagement.Web.Pages.Cart
                 CartItems[index].Quantity = quantity;
                 HttpContext.Session.SetObjectAsJson("Cart", CartItems);
             }
+            int cartItemCount = (int)CartItems.Sum(item => item.Quantity);
+            HttpContext.Session.SetInt32("cartItemCount", cartItemCount);
 
             CalculateTotals();
             return RedirectToPage();
@@ -77,6 +82,8 @@ namespace PRN221.SalesManagement.Web.Pages.Cart
                 HttpContext.Session.SetObjectAsJson("Cart", CartItems);
             }
 
+            int cartItemCount = (int)CartItems.Sum(item => item.Quantity);
+            HttpContext.Session.SetInt32("cartItemCount", cartItemCount);
             CalculateTotals();
             return RedirectToPage();
         }

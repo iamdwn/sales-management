@@ -16,6 +16,7 @@
     <main role="main" class="pb-3">
         @{
             var user = Context.Session.GetObjectFromJson<UserDto>("User");
+            var cartItemCount = Context.Session.GetInt32("cartItemCount");
         }
         <div class="sidebar closed">
             <span class="toggle-icon"><i class="fas fa-chevron-right"></i></span>
@@ -49,10 +50,25 @@
                     <div class="sidebar-bottom">
                         @if (!user.isAdmin)
                         {
-                            <a class="nav-link" href="/Cart/Index">
-                                <i class="fas fa-shopping-cart"></i>
-                                <span>Cart</span>
-                            </a>
+                            if (!(cartItemCount > 0))
+                            {
+                                <a class="nav-link" href="/Cart/Index">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    <span>Cart</span>
+                                    <span class="cart-item-count badge badge-pill badge-danger"></span>
+                                </a>
+                            }
+                            else
+                            {
+                                <a class="nav-link position-relative" href="/Cart/Index">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    <span class="ms-2">Cart</span>
+                                    <span class="cart-item-count badge translate-middle badge rounded-pill bg-danger">
+                                        @cartItemCount
+                                        <span class="visually-hidden">items in cart</span>
+                                    </span>
+                                </a>
+                            }
                         }
                         @if (user.isAdmin)
                         {
@@ -211,5 +227,36 @@
             }
         });
     });
+
+    // $(document).ready(function () {
+    //     $('.add-to-cart-btn').click(function (event) {
+    //         event.preventDefault(); // Prevent the default form submission behavior
+    //         const form = $(this).closest('.add-to-cart-form');
+    //         const formData = form.serialize();
+
+    //         $.ajax({
+    //             url: form.attr('action'),
+    //             method: form.attr('method'),
+    //             data: formData,
+    //             success: function (response) {
+    //                 // Update cart count in the sidebar
+    //                 updateCartCount(response.cartItemCount);
+
+    //                 // Optional: Show a success message
+    //                 alert('Product added to cart successfully!');
+    //             },
+    //             error: function () {
+    //                 // Optional: Show an error message
+    //                 alert('Failed to add product to cart.');
+    //             }
+    //         });
+    //     });
+
+    //     function updateCartCount(count) {
+    //         // Update the cart item count in the sidebar badge
+    //         $('.cart-item-count').text(count);
+    //     }
+    // });
+
 </script>
 </html>
