@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using PRN221.SalesManagement.Repo.Impl;
+using PRN221.SalesManagement.Repo.Interfaces;
 using PRN221.SalesManagement.Repo.Models;
 using PRN221.SalesManagement.Repo.Persistences;
 
@@ -13,12 +15,13 @@ namespace PRN221.SalesManagement.Web.Pages.CategoryPage
 {
     public class EditModel : PageModel
     {
-        private readonly PRN221.SalesManagement.Repo.Persistences.SalesManagementContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public EditModel(PRN221.SalesManagement.Repo.Persistences.SalesManagementContext context)
+        public EditModel(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
+
 
         [BindProperty]
         public Category Category { get; set; } = default!;
@@ -30,7 +33,7 @@ namespace PRN221.SalesManagement.Web.Pages.CategoryPage
                 return NotFound();
             }
 
-            var category =  await _context.Categories.FirstOrDefaultAsync(m => m.Id == id);
+            var category = _unitOfWork.CategoryRepository.GetByID(id);
             if (category == null)
             {
                 return NotFound();
@@ -41,18 +44,19 @@ namespace PRN221.SalesManagement.Web.Pages.CategoryPage
 
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(Category category)
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            _context.Attach(Category).State = EntityState.Modified;
+            //_context.Attach(Category).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                _unitOfWork.CategoryRepository.Update(category);
+                _unitOfWork.Save();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -71,7 +75,7 @@ namespace PRN221.SalesManagement.Web.Pages.CategoryPage
 
         private bool CategoryExists(int id)
         {
-            return _context.Categories.Any(e => e.Id == id);
+            return _unitOfWork.CategoryRepository.GetByID(id) != null ? true : false;
         }
     }
 }

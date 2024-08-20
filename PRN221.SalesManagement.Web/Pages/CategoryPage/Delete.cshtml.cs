@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using PRN221.SalesManagement.Repo.Impl;
+using PRN221.SalesManagement.Repo.Interfaces;
 using PRN221.SalesManagement.Repo.Models;
 using PRN221.SalesManagement.Repo.Persistences;
 using PRN221.SalesManagement.Repo.SessionExtensions;
@@ -13,11 +15,11 @@ namespace PRN221.SalesManagement.Web.Pages.CategoryPage
 {
     public class DeleteModel : PageModel
     {
-        private readonly PRN221.SalesManagement.Repo.Persistences.SalesManagementContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public DeleteModel(PRN221.SalesManagement.Repo.Persistences.SalesManagementContext context)
+        public DeleteModel(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         [BindProperty]
@@ -30,7 +32,7 @@ namespace PRN221.SalesManagement.Web.Pages.CategoryPage
                 return NotFound();
             }
 
-            var category = await _context.Categories.FirstOrDefaultAsync(m => m.Id == id);
+            var category =  _unitOfWork.CategoryRepository.GetByID(id);
 
             if (category == null)
             {
@@ -50,15 +52,16 @@ namespace PRN221.SalesManagement.Web.Pages.CategoryPage
                 return NotFound();
             }
 
-            var category = await _context.Categories.FindAsync(id);
+            var category = _unitOfWork.CategoryRepository.GetByID(id);
             var listProductRemove = new List<Product>();
 
             if (category != null)
             {
                 Category = category;
-                listProductRemove = _context.Products
-                    .Include(p => p.Category)
-                    .Where(p => p.CategoryId.Equals(category.Id))
+                listProductRemove = _unitOfWork.ProductRepository.Get(
+                    includeProperties: "Category",
+                    filter: p => p.CategoryId.Equals(category.Id)
+                    )
                     .ToList();
 
                 //HttpContext.Session.SetObjectAsJson("listProductRemove", listProductRemove);
@@ -68,14 +71,14 @@ namespace PRN221.SalesManagement.Web.Pages.CategoryPage
                 {
                     foreach (var orderDetail in product.OrderDetails)
                     {
-                        _context.OrderDetails.Remove(orderDetail);
-                        _context.SaleOrders.Remove(orderDetail.SaleOrder);
+                        _unitOfWork.OrderDetailRepository.Delete(orderDetail);
+                        _unitOfWork.SaleOrderRepository.Delete(orderDetail.SaleOrder);
                     }
-                    _context.Products.Remove(product);
+                    _unitOfWork.ProductRepository.Delete(product);
                 }
 
-                _context.Categories.Remove(Category);
-                await _context.SaveChangesAsync();
+                _unitOfWork.CategoryRepository.Delete(Category);
+                _unitOfWork.Save();
             }
 
             return RedirectToPage("./Index");
