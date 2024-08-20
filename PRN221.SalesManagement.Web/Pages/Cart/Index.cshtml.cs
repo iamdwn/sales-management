@@ -1,73 +1,97 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using PRN221.SalesManagement.Repo.Dtos;
-using PRN221.SalesManagement.Repo.Impl;
-using PRN221.SalesManagement.Repo.Interfaces;
 using PRN221.SalesManagement.Repo.SessionExtensions;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace PRN221.SalesManagement.Web.Pages.Cart
 {
     public class IndexModel : PageModel
     {
-        public List<CartItems> CartItems { get; set; }
+        public List<CartItems> CartItems { get; set; } = new List<CartItems>();
 
-        public double Subtotal => CartItems.Sum(x => x.Price * x.Quantity);
-        public double Tax => Subtotal * 0.1;
-        public double Shipping => 5.00; 
-        public double Total => Subtotal + Tax + Shipping;
-        public IUnitOfWork _unitOfWork;
-
-        public IndexModel(IUnitOfWork unitOfWork)
-        {
-            _unitOfWork = unitOfWork;
-        }
+        public double Subtotal { get; private set; }
+        public double Tax { get; private set; }
+        public double Shipping { get; private set; }
+        public double Total { get; private set; }
 
         public void OnGet()
         {
+            // Load cart from session
             CartItems = HttpContext.Session.GetObjectFromJson<List<CartItems>>("Cart") ?? new List<CartItems>();
+
+            CalculateTotals();
         }
 
-        public IActionResult OnPost(int ProductId, int Quantity)
+        public IActionResult OnPostAddToCart(int productId, string productName, string description, double price, double quantity)
         {
-            var cart = HttpContext.Session.GetObjectFromJson<List<CartItems>>("Cart") ?? new List<CartItems>();
-            var product = _unitOfWork.ProductRepository.GetByID(ProductId);
+            CartItems = HttpContext.Session.GetObjectFromJson<List<CartItems>>("Cart") ?? new List<CartItems>();
 
-            var cartItem = cart.FirstOrDefault(x => x.ProductId == ProductId);
-            if (cartItem == null)
+            // Check if the item already exists in the cart
+            var existingItem = CartItems.Find(item => item.ProductId == productId);
+
+            if (existingItem != null)
             {
-                cart.Add(new CartItems { ProductId = ProductId, ProductName = product.Name, Price = (double) product.Price, Quantity = Quantity });
+                // Update quantity if item exists
+                existingItem.Quantity += quantity;
             }
             else
             {
-                cartItem.Quantity += Quantity;
+                // Add new item to cart
+                CartItems.Add(new CartItems
+                {
+                    ProductId = productId,
+                    ProductName = productName,
+                    Price = (double)price,
+                    Quantity = quantity
+                });
             }
 
-            HttpContext.Session.SetObjectAsJson("Cart", cart);
+            // Save the updated cart back to session
+            HttpContext.Session.SetObjectAsJson("Cart", CartItems);
+
             return RedirectToPage("/Cart/Index");
+        }
+
+
+        public IActionResult OnPostUpdateQuantity(int index, int quantity)
+        {
+            CartItems = HttpContext.Session.GetObjectFromJson<List<CartItems>>("Cart") ?? new List<CartItems>();
+
+            if (index >= 0 && index < CartItems.Count)
+            {
+                CartItems[index].Quantity = quantity;
+                HttpContext.Session.SetObjectAsJson("Cart", CartItems);
+            }
+
+            CalculateTotals();
+            return RedirectToPage();
         }
 
         public IActionResult OnPostRemoveItem(int index)
         {
-            var cart = HttpContext.Session.GetObjectFromJson<List<CartItems>>("Cart");
-            if (cart != null && index >= 0 && index < cart.Count)
+            CartItems = HttpContext.Session.GetObjectFromJson<List<CartItems>>("Cart") ?? new List<CartItems>();
+
+            if (index >= 0 && index < CartItems.Count)
             {
-                cart.RemoveAt(index);
-                HttpContext.Session.SetObjectAsJson("Cart", cart);
+                CartItems.RemoveAt(index);
+                HttpContext.Session.SetObjectAsJson("Cart", CartItems);
             }
+
+            CalculateTotals();
             return RedirectToPage();
         }
 
-        public IActionResult OnPostUpdateQuantity(int index, int quantity)
+        private void CalculateTotals()
         {
-            var cart = HttpContext.Session.GetObjectFromJson<List<CartItems>>("Cart");
-            if (cart != null && index >= 0 && index < cart.Count)
+            Subtotal = 0;
+            foreach (var item in CartItems)
             {
-                cart[index].Quantity = quantity;
-                HttpContext.Session.SetObjectAsJson("Cart", cart);
+                Subtotal += item.Price * item.Quantity;
             }
-            return RedirectToPage();
+
+            Tax = Subtotal * 0.1;
+            Shipping = 5.00; 
+            Total = Subtotal + Tax + Shipping;
         }
     }
 }
