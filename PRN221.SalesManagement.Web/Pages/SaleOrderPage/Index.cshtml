@@ -21,6 +21,37 @@
         left: 20px;
         z-index: 1000;
     }
+
+    .badge {    
+        font-size: 1rem;
+        padding: 0.5em 1em;
+        border-radius: 0.5em;
+        color: #fff;
+        display: inline-block;
+        min-width: 100px; /* Ensures all badges have a consistent width */
+        text-align: center;
+    }
+
+    .badge-warning {
+        background-color: #ffc107;
+        border: 1px solid #e0a800;
+    }
+
+    .badge-danger {
+        background-color: #dc3545;
+        border: 1px solid #c82333;
+    }
+
+    .badge-success {
+        background-color: #28a745;
+        border: 1px solid #218838;
+    }
+
+    .badge:hover {
+        opacity: 0.9;
+        transform: scale(1.05);
+        transition: all 0.2s ease-in-out;
+    }
 </style>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -67,7 +98,22 @@
                         <td>@Html.DisplayFor(modelItem => item.TotalAmount)</td>
                         <td style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">@Html.DisplayFor(modelItem => item.CustomerName)</td>
                         <td>@Html.DisplayFor(modelItem => item.Phone)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Status)</td>
+                        <td>
+                            @{
+                                if (item.Status == -1)
+                                {
+                                    <span class="badge badge-warning" style="font-size: 1rem; padding: 0.5em 1em; border-radius: 0.5em;">Waiting</span>
+                                }
+                                else if (item.Status == 0)
+                                {
+                                    <span class="badge badge-danger" style="font-size: 1rem; padding: 0.5em 1em; border-radius: 0.5em;">Rejected</span>
+                                }
+                                else if (item.Status == 1)
+                                {
+                                    <span class="badge badge-success" style="font-size: 1rem; padding: 0.5em 1em; border-radius: 0.5em;">Accepted</span>
+                                }
+                            }
+                        </td>
                         <td class="text-center">
                             <a class="btn btn-info btn-sm" asp-page="./Edit" asp-route-id="@item.Id">Edit</a>
                             <a class="btn btn-primary btn-sm" asp-page="./Details" asp-route-id="@item.Id">Details</a>

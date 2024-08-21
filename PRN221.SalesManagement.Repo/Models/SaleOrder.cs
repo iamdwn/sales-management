@@ -15,7 +15,7 @@ public partial class SaleOrder
 
     public string Phone { get; set; } = null!;
 
-    public bool Status { get; set; }
+    public int Status { get; set; }
 
     public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
 }

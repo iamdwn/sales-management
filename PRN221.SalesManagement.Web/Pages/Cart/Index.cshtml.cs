@@ -117,7 +117,7 @@ namespace PRN221.SalesManagement.Web.Pages.Cart
                 Phone = phone,
                 OrderDate = DateTime.Now,
                 TotalAmount = (decimal)Total,
-                Status = true
+                Status = -1
             };
 
             _unitOfWork.SaleOrderRepository.Insert(saleOrder);
