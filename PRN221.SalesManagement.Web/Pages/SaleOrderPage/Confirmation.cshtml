@@ -1,0 +1,50 @@
+﻿@* @page
+@model PRN221.SalesManagement.Web.Pages.SaleOrderPage.ConfirmationModel
+
+@{
+    ViewData["Title"] = "Order Confirmation";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center">Thank you for your order!</h2>
+    <p class="text-center">Your order has been successfully placed. Below are the details:</p>
+
+    <div class="order-summary mt-4">
+        <h4>Order Summary</h4>
+        <p><strong>Order ID:</strong> @Model.SaleOrder.Id</p>
+        <p><strong>Order Date:</strong> @Model.SaleOrder.OrderDate.ToString("MMMM dd, yyyy")</p>
+        <p><strong>Total Amount:</strong> $@Model.SaleOrder.TotalAmount.ToString("F2")</p>
+        <p><strong>Customer Name:</strong> @Model.SaleOrder.CustomerName</p>
+        <p><strong>Phone:</strong> @Model.SaleOrder.Phone</p>
+    </div>
+
+    <div class="order-details mt-4">
+        <h4>Order Details</h4>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Total Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var detail in Model.OrderDetails)
+                {
+                    <tr>
+                        <td>@detail.Product.Name</td>
+                        <td>@detail.Quantity</td>
+                        <td>$@detail.UnitPrice.ToString("F2")</td>
+                        <td>$@(detail.UnitPrice * detail.Quantity).ToString("F2")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="text-center mt-5">
+        <a href="/ProductPage/Index" class="btn btn-primary">Continue Shopping</a>
+    </div>
+</div>
+ *@
