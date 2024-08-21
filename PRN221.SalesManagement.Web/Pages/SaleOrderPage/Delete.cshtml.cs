@@ -51,18 +51,21 @@ namespace PRN221.SalesManagement.Web.Pages.SaleOrderPage
             }
 
             var saleorder = _unitOfWork.SaleOrderRepository.GetByID(id);
-            //var listRemove = new List<OrderDetail>();
+            var listOrderDetailRemove = new List<OrderDetail>();
 
             if (saleorder != null)
             {
                 SaleOrder = saleorder;
-                //listRemove = _context.OrderDetails
-                //    .Include(o => o.SaleOrder)
-                //    .Where(o => o.SaleOrder.Id.Equals(saleorder.Id))
-                //    .ToList();
+                listOrderDetailRemove = _unitOfWork.OrderDetailRepository.Get(
+                    includeProperties: "SaleOrder",
+                    filter: o => o.SaleOrder.Id.Equals(saleorder.Id)
+                    )
+                    .ToList();
 
-                //_context.RemoveRange(listRemove);
-
+                foreach (var detail in listOrderDetailRemove)
+                {
+                    _unitOfWork.OrderDetailRepository.Delete(detail);
+                }
 
                 _unitOfWork.SaleOrderRepository.Delete(SaleOrder);
                 _unitOfWork.Save();
