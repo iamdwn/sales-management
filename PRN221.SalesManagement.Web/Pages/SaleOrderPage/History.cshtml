@@ -1,0 +1,129 @@
+﻿@page
+@model PRN221.SalesManagement.Web.Pages.SaleOrderPage.HistoryModel
+
+@{
+    ViewData["Title"] = "Order History";
+}
+
+<style>
+    .btn:hover {
+        background-color: #66b2ff; /* Lighter blue shade */
+        border-color: #3399ff;
+        transform: scale(1.05);
+        transition: all 0.3s ease-in-out;
+    }
+
+    .back-to-home {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 1000;
+    }
+
+    .badge-warning {
+        background-color: #ffc107;
+        border: 1px solid #e0a800;
+    }
+
+    .badge-danger {
+        background-color: #dc3545;
+        border: 1px solid #c82333;
+    }
+
+    .badge-success {
+        background-color: #28a745;
+        border: 1px solid #218838;
+    }
+
+    .badge:hover {
+        opacity: 0.9;
+        transform: scale(1.05);
+        transition: all 0.2s ease-in-out;
+    }
+</style>
+
+<h1 class="display-4 text-center mb-4">Order History</h1>
+
+<div class="container my-4">
+    <a href="/ProductPage/Index" class="btn btn-light">
+        <i class="fas fa-store"></i> Go Shopping
+    </a>
+</div>
+
+@if (Model.SaleOrders != null && Model.SaleOrders.Any())
+{
+    <div class="table-responsive" style="min-height: 550px">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Order Date</th>
+                    <th>Total Amount</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in Model.SaleOrders)
+                {
+                    <tr>
+                        <td>@order.Id</td>
+                        <td>@order.OrderDate.ToString("dd/MM/yyyy")</td>
+                        <td>@order.TotalAmount.ToString("C")</td>
+                        <td>
+                            @{
+                                if (order.Status == -1)
+                                {
+                                    <span class="badge badge-warning" style="font-size: 1rem; padding: 0.5em 1em; border-radius: 0.5em;">Waiting</span>
+                                }
+                                else if (order.Status == 0)
+                                {
+                                    <span class="badge badge-danger" style="font-size: 1rem; padding: 0.5em 1em; border-radius: 0.5em;">Rejected</span>
+                                }
+                                else if (order.Status == 1)
+                                {
+                                    <span class="badge badge-success" style="font-size: 1rem; padding: 0.5em 1em; border-radius: 0.5em;">Accepted</span>
+                                }
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <nav aria-label="Page navigation">
+        <ul class="pagination pagination-sm justify-content-center mt-3">
+            <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                <a class="page-link" asp-page="./History" asp-route-pageIndex="@(Model.PageIndex - 1)" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item disabled">
+                <span class="page-link">Page @Model.PageIndex of @Model.TotalPages</span>
+            </li>
+            <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                <a class="page-link" asp-page="./History" asp-route-pageIndex="@(Model.PageIndex + 1)" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+}
+else
+{
+    <div class="alert alert-info text-center">
+        No history.
+    </div>
+}
+
+<style>
+    h1.display-4 {
+        font-size: 2.5rem;
+        font-weight: 300;
+        color: #0056b3;
+    }
+
+    .table {
+        margin-top: 1.5rem;
+    }
+</style>
