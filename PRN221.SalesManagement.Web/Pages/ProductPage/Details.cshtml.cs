@@ -32,7 +32,8 @@ namespace PRN221.SalesManagement.Web.Pages.ProductPage
             var product = _unitOfWork.ProductRepository.Get(
                 includeProperties: "Category",
                 filter: m => m.Id == id
-                );
+                )
+                .FirstOrDefault();
 
             if (product == null)
             {
@@ -40,7 +41,7 @@ namespace PRN221.SalesManagement.Web.Pages.ProductPage
             }
             else
             {
-                Product = product.FirstOrDefault();
+                Product = product;
             }
             return Page();
         }

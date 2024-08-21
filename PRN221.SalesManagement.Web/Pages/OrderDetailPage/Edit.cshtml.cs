@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using PRN221.SalesManagement.Repo.Impl;
+using PRN221.SalesManagement.Repo.Interfaces;
 using PRN221.SalesManagement.Repo.Models;
 using PRN221.SalesManagement.Repo.Persistences;
 
@@ -13,11 +15,11 @@ namespace PRN221.SalesManagement.Web.Pages.OrderDetailPage
 {
     public class EditModel : PageModel
     {
-        private readonly PRN221.SalesManagement.Repo.Persistences.SalesManagementContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public EditModel(PRN221.SalesManagement.Repo.Persistences.SalesManagementContext context)
+        public EditModel(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         [BindProperty]
@@ -30,31 +32,32 @@ namespace PRN221.SalesManagement.Web.Pages.OrderDetailPage
                 return NotFound();
             }
 
-            var orderdetail =  await _context.OrderDetails.FirstOrDefaultAsync(m => m.Id == id);
+            var orderdetail = _unitOfWork.OrderDetailRepository.GetByID(id);
             if (orderdetail == null)
             {
                 return NotFound();
             }
             OrderDetail = orderdetail;
-           ViewData["OrderId"] = new SelectList(_context.SaleOrders, "Id", "CustomerName");
-           ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name");
+           ViewData["OrderId"] = new SelectList(_unitOfWork.SaleOrderRepository.Get(), "Id", "CustomerName");
+           ViewData["ProductId"] = new SelectList(_unitOfWork.ProductRepository.Get(), "Id", "Name");
             return Page();
         }
 
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(OrderDetail orderDetail)
         {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
+            //if (!ModelState.IsValid)
+            //{
+            //    return Page();
+            //}
 
-            _context.Attach(OrderDetail).State = EntityState.Modified;
+            //_context.Attach(OrderDetail).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                _unitOfWork.OrderDetailRepository.Update(orderDetail);
+                _unitOfWork.Save();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -73,7 +76,7 @@ namespace PRN221.SalesManagement.Web.Pages.OrderDetailPage
 
         private bool OrderDetailExists(int id)
         {
-            return _context.OrderDetails.Any(e => e.Id == id);
+            return _unitOfWork.OrderDetailRepository.GetByID(id) != null ? true : false;
         }
     }
 }

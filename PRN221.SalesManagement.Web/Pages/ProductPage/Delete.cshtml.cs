@@ -30,7 +30,11 @@ namespace PRN221.SalesManagement.Web.Pages.ProductPage
                 return NotFound();
             }
 
-            var product = _unitOfWork.ProductRepository.GetByID(id);
+            var product = _unitOfWork.ProductRepository.Get(
+                includeProperties: "Category",
+                filter: p => p.Id == id
+                )
+                .FirstOrDefault();
 
             if (product == null)
             {
@@ -56,11 +60,6 @@ namespace PRN221.SalesManagement.Web.Pages.ProductPage
             if (product != null)
             {
                 Product = product;
-                listRemove = _unitOfWork.OrderDetailRepository.Get(
-                    includeProperties: "SaleOrder",
-                    filter: o => o.Product.Id.Equals(product.Id)
-                    )
-                    .ToList();
 
                 foreach (var orderDetail in product.OrderDetails)
                 {

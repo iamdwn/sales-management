@@ -58,7 +58,7 @@ public partial class SalesManagementContext : DbContext
 
             entity.HasOne(d => d.SaleOrder).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.OrderId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK__OrderDeta__Order__2C3393D0");
 
             entity.HasOne(d => d.Product).WithMany(p => p.OrderDetails)

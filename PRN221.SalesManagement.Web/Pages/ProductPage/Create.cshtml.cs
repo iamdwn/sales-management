@@ -20,7 +20,6 @@ namespace PRN221.SalesManagement.Web.Pages.ProductPage
             _unitOfWork = unitOfWork;
         }
 
-
         public IActionResult OnGet()
         {
             var activeCategories = _unitOfWork.CategoryRepository.Get(

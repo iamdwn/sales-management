@@ -51,7 +51,7 @@ namespace PRN221.SalesManagement.Web.Pages.SaleOrderPage
             }
 
             var saleorder = _unitOfWork.SaleOrderRepository.GetByID(id);
-            var listRemove = new List<OrderDetail>();
+            //var listRemove = new List<OrderDetail>();
 
             if (saleorder != null)
             {

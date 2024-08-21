@@ -9,12 +9,10 @@ namespace PRN221.SalesManagement.Web.Pages.OrderDetailPage
     public class IndexModel : PageModel
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly PRN221.SalesManagement.Repo.Persistences.SalesManagementContext _context;
 
-        public IndexModel(IUnitOfWork unitOfWork, Repo.Persistences.SalesManagementContext context)
+        public IndexModel(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _context = context;
         }
 
         public IList<OrderDetail> OrderDetail { get; set; } = new List<OrderDetail>();
@@ -22,7 +20,7 @@ namespace PRN221.SalesManagement.Web.Pages.OrderDetailPage
         // Pagination properties
         public int PageIndex { get; set; } = 1;
         public int TotalPages { get; set; }
-        public string includeProperties = "SaleOrder,Product";
+        public string IncludeProperties { get; set; } = "SaleOrder,Product";
 
         [BindProperty(SupportsGet = true)]
         public int PageSize { get; set; } = 10; // Default page size
@@ -39,24 +37,15 @@ namespace PRN221.SalesManagement.Web.Pages.OrderDetailPage
                 PageIndex = TotalPages;
             }
 
-            //OrderDetail = _unitOfWork.OrderDetailRepository.Get(
-            //    includeProperties: "SaleOrder, Product",
-            //    pageIndex: PageIndex,
-            //    pageSize: PageSize
-            //).ToList();
-            IQueryable<OrderDetail> query = _context.OrderDetails;
-
-            // Include related entities
-            foreach (var includeProperty in includeProperties.Split
-                (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-            {
-                query = query.Include(includeProperty);
-            }
+            var orderDetailsQuery = _unitOfWork.OrderDetailRepository.Get(
+                includeProperties: IncludeProperties
+            );
 
             // Apply pagination
-            query = query.Skip((pageIndex - 1) * PageSize).Take(PageSize);
-
-            OrderDetail = query.ToList();
+            OrderDetail = orderDetailsQuery
+                .Skip((PageIndex - 1) * PageSize)
+                .Take(PageSize)
+                .ToList();
         }
 
         public bool HasPreviousPage => PageIndex > 1;

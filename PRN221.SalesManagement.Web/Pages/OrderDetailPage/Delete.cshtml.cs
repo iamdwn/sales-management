@@ -22,6 +22,7 @@ namespace PRN221.SalesManagement.Web.Pages.OrderDetailPage
 
         [BindProperty]
         public OrderDetail OrderDetail { get; set; } = default!;
+        public string IncludeProperties { get; set; } = "SaleOrder,Product";
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -30,7 +31,11 @@ namespace PRN221.SalesManagement.Web.Pages.OrderDetailPage
                 return NotFound();
             }
 
-            var orderdetail = _unitOfWork.OrderDetailRepository.GetByID(id);
+            var orderdetail = _unitOfWork.OrderDetailRepository.Get(
+                includeProperties: IncludeProperties,
+                filter: o => o.Id == id
+                )
+                .FirstOrDefault();
 
             if (orderdetail == null)
             {
@@ -50,15 +55,30 @@ namespace PRN221.SalesManagement.Web.Pages.OrderDetailPage
                 return NotFound();
             }
 
-            var orderdetail = _unitOfWork.OrderDetailRepository.GetByID(id);
+            var orderdetail = _unitOfWork.OrderDetailRepository.Get(
+                includeProperties: IncludeProperties,
+                filter: o => o.Id == id)
+                .FirstOrDefault();
+
+
+            //var orderdetailRemove = _unitOfWork.OrderDetailRepository.Get(
+            //    includeProperties: IncludeProperties,
+            //    filter: o => o.Id == orderdetail.SaleOrder.Id)
+            //    .ToList();
 
 
             if (orderdetail != null)
             {
                 OrderDetail = orderdetail;
 
-                _unitOfWork.SaleOrderRepository.Delete(OrderDetail.SaleOrder);
-                _unitOfWork.OrderDetailRepository.Delete(OrderDetail);
+                //foreach ( var item in orderdetailRemove )
+                //{
+                //    _unitOfWork.OrderDetailRepository.Delete(item);
+                //}
+
+                _unitOfWork.OrderDetailRepository.Delete(orderdetail);
+
+                //_unitOfWork.SaleOrderRepository.Delete(OrderDetail.SaleOrder);
 
                 _unitOfWork.Save();
             }
