@@ -5,8 +5,30 @@
     ViewData["Title"] = "Shopping Cart";
 }
 
+<style>
+    .btn:hover {
+        background-color: #66b2ff; /* Lighter blue shade */
+        border-color: #3399ff;
+        transform: scale(1.05);
+        transition: all 0.3s ease-in-out;
+    }
+
+    .back-to-home {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 1000;
+    }
+</style>
+
 <div class="container">
     <h2>Your Shopping Cart</h2>
+
+    <div class="container my-4">
+        <a href="/ProductPage/Index" class="btn btn-light">
+            <i class="fas fa-home"></i> Back
+        </a>
+    </div>
 
     <div class="row">
         <!-- Cart Items Section -->
