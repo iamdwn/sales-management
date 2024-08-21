@@ -40,8 +40,30 @@
                 @Html.DisplayNameFor(model => model.SaleOrder.Status)
             </dt>
             <dd class="col-sm-9">
-                @Html.DisplayFor(model => model.SaleOrder.Status)
+                @{
+                    var status = Model.SaleOrder.Status;
+                    string badgeClass = "";
+                    string statusText = "";
+
+                    if (status == -1)
+                    {
+                        badgeClass = "badge badge-warning";
+                        statusText = "Waiting";
+                    }
+                    else if (status == 0)
+                    {
+                        badgeClass = "badge badge-danger";
+                        statusText = "Rejected";
+                    }
+                    else if (status == 1)
+                    {
+                        badgeClass = "badge badge-success";
+                        statusText = "Accepted";
+                    }
+                }
+                <span class="@badgeClass" style="font-size: 1rem; padding: 0.5em 1em; border-radius: 0.5em;">@statusText</span>
             </dd>
+
         </dl>
     </div>
 
@@ -116,4 +138,35 @@
             border-color: #545b62;
             transform: scale(1.05);
         }
+
+    .badge {
+        font-size: 1rem;
+        padding: 0.5em 1em;
+        border-radius: 0.5em;
+        color: #fff;
+        display: inline-block;
+        min-width: 100px; /* Ensures all badges have a consistent width */
+        text-align: center;
+    }
+
+    .badge-warning {
+        background-color: #ffc107;
+        border: 1px solid #e0a800;
+    }
+
+    .badge-danger {
+        background-color: #dc3545;
+        border: 1px solid #c82333;
+    }
+
+    .badge-success {
+        background-color: #28a745;
+        border: 1px solid #218838;
+    }
+
+    .badge:hover {
+        opacity: 0.9;
+        transform: scale(1.05);
+        transition: all 0.2s ease-in-out;
+    }
 </style>
