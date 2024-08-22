@@ -1,4 +1,4 @@
 *.cs linguist-language=CSharp
 *.cshtml linguist-language=js
-*.cshtml linguist-language=HTML
-*.cshtml linguist-language=cs
+*.html linguist-detectable=false
+*.css linguist-detectable=false
