@@ -1,6 +1,5 @@
 ﻿
 using PRN221.SalesManagement.Web.Extensions;
-using Microsoft.EntityFrameworkCore;
 using PRN221.SalesManagement.Repo.Persistences;
 using PRN221.SalesManagement.Repo.Impl;
 using PRN221.SalesManagement.Repo.Interfaces;
@@ -9,10 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddDbContext<SalesManagementContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
+//builder.Services.AddDbContext<SalesManagementContext>(options =>
+//{
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+//});
 
 //Register SignalR
 builder.Services.AddSignalR().AddJsonProtocol(options =>
